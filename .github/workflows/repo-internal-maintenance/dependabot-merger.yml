@@ -7,6 +7,6 @@ permissions:
 
 jobs:
   dependabot-automerge:
-    uses: ../.github/workflows/pr-merger.yml@main
+    uses: ../.github/workflows/dependabot-merger.yml@main
     with:
       merge_method: 'squash'

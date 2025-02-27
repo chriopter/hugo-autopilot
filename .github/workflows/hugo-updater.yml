@@ -87,6 +87,7 @@ jobs:
           git push --set-upstream origin ${{ inputs.update_branch }} --force
 
       - name: Create Pull Request
+        id: create-pr
         uses: peter-evans/create-pull-request@v7
         with:
           branch: ${{ inputs.update_branch }}
@@ -102,3 +103,18 @@ jobs:
           labels: |
             dependencies
             automated
+            
+      - name: Auto-merge Pull Request
+        if: steps.create-pr.outputs.pull-request-number
+        run: |
+          gh pr merge --auto --squash --merge-message "pull-request-title" "${{ steps.create-pr.outputs.pull-request-url }}"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Delete branch after merge
+        if: steps.create-pr.outputs.pull-request-number
+        run: |
+          # Wait a moment for the merge to complete
+          sleep 5
+          # Delete the branch
+          git push origin --delete ${{ inputs.update_branch }} || echo "Branch may already be deleted"

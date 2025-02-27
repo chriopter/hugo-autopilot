@@ -73,10 +73,10 @@ jobs:
     with:
       hugo_version_file: ${{ inputs.hugo_version_file }}
 
-  # Auto-merge PRs
+  # Auto-merge Dependabot PRs
   automerge:
     needs: router
     if: needs.router.outputs.run_automerge == 'true'
-    uses: chriopter/hugo-autopilot/.github/workflows/pr-merger.yml@main
+    uses: chriopter/hugo-autopilot/.github/workflows/dependabot-merger.yml@main
     with:
       merge_method: ${{ inputs.merge_method }}
