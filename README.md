@@ -15,32 +15,29 @@ Hugo Autopilot combines three powerful workflows into a single, easy-to-use solu
 
 ```mermaid
 flowchart TD
-    Start[Workflow Trigger] --> Router[Router Job]
+    Start[Workflow Trigger] --> Router[Router]
     
-    Router --> PR{PR Event?}
-    PR -->|Yes| Automerge[Handle Dependabot PRs]
+    Router --> PR[PR Event]
+    Router --> Schedule[Schedule Event]
+    Router --> Manual[Manual Trigger]
+    Router --> Build[Build Event]
     
-    Router --> Schedule{Schedule Event?}
-    Schedule -->|Yes| CheckUpdate[Check Hugo Version]
-    CheckUpdate --> NeedsUpdate{Update Available?}
-    NeedsUpdate -->|Yes| UpdateHugo[Update Hugo Version]
-    UpdateHugo --> CreatePR[Create PR with Title Prefix]
-    CreatePR --> AutoMergePR[Auto-Merge PR]
-    AutoMergePR --> DispatchBuild[Dispatch Build Event]
+    PR --> Automerge[Auto-Merge Dependencies]
+    Schedule --> UpdateCheck[Check & Update Hugo]
+    Manual --> UpdateCheck
+    Manual --> BuildSite
     
-    NeedsUpdate -->|No| SkipUpdate[Skip Update]
+    UpdateCheck -->|Update Found| CreatePR[Create & Merge PR]
+    CreatePR --> TriggerBuild[Trigger New Build]
     
-    Router --> Build{Build Trigger?}
-    Build -->|Yes| CheckPRs{Open Update PRs?}
-    CheckPRs -->|Yes| SkipBuild[Skip Build]
-    CheckPRs -->|No| BuildSite[Build & Deploy Site]
+    Build --> CheckPending{Update Pending?}
+    CheckPending -->|Yes| Skip[Skip Build]
+    CheckPending -->|No| BuildSite[Build & Deploy Site]
     
-    DispatchBuild --> NewWorkflow[New Workflow Run]
-    NewWorkflow --> BuildSite
+    TriggerBuild --> BuildSite
     
     Automerge --> End[End]
-    SkipUpdate --> End
-    SkipBuild --> End
+    Skip --> End
     BuildSite --> End
 ```
 
