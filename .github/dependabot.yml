@@ -1,22 +1,19 @@
 version: 2
 updates:
-  # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-    # Limit to 5 open pull requests for version updates
-    open-pull-requests-limit: 10
-    # Add labels to pull requests
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 9
     labels:
       - "dependencies"
-      - "github-actions"
-    # Use custom commit message
     commit-message:
       prefix: "ci"
       include: "scope"
-    # Group all updates together
     groups:
       github-actions:
         patterns:
-          - "*"
+          - "*"  # This will group all GitHub Actions updates together
+  
