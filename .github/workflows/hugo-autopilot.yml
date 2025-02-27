@@ -19,6 +19,12 @@ on:
         type: string
         default: 'squash'
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   # Determine which jobs to run based on the event type
   router:
