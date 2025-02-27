@@ -76,7 +76,6 @@ jobs:
           hugo \
             --minify \
             --gc \
-            --ignoreDir=.github \
             ${{ inputs.enable_git_info && '--enableGitInfo' || '' }} \
             --baseURL "${{ steps.pages.outputs.base_url }}/"
           
