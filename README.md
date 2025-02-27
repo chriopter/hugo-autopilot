@@ -15,28 +15,15 @@ Hugo Autopilot provides a set of reusable GitHub Actions workflows that automate
 
 Hugo Autopilot combines three powerful workflows into a single, easy-to-use solution that you can reference from your Hugo site with just one file. The system uses a router mechanism to determine which workflows to run based on the trigger event:
 
-| Event Type | Hugo Builder | Hugo Updater | PR Merger |
-|------------|:------------:|:------------:|:---------:|
+| Event Type | Hugo Builder<br>(Builds & Deploys) | Hugo Updater<br>(Auto-Updates Hugo) | PR Merger<br>(Auto-Merges PRs) |
+|------------|:----------------------------------:|:-----------------------------------:|:------------------------------:|
 | `push` to main | ✅ | ❌ | ❌ |
 | `schedule` (weekly) | ❌ | ✅ | ❌ |
 | `pull_request` | ❌ | ❌ | ✅ |
 | `repository_dispatch` | ✅ | ❌ | ❌ |
 | `workflow_dispatch` (manual) | ✅ | ✅ | ✅ |
 
-### Hugo Builder
-- **What it does**: Builds your Hugo site and deploys it to GitHub Pages
-- **Customization**: Configure Git info, Hugo version, and other build parameters
-
-### Hugo Updater
-- **What it does**: 
-  1. Checks for new Hugo versions by comparing your `.hugoversion` file with the latest release
-  2. Creates a pull request to update your Hugo version if an update is available
-  3. Automatically merges the PR after creation
-- **Note**: This workflow does NOT run on normal commits - it only runs on schedule or when manually triggered to avoid creating too many PRs
-
-### PR Merger
-- **What it does**: Automatically merges dependency update PRs that meet certain criteria
-- **Customization**: Configure merge method and PR filtering
+**Note**: The Hugo Updater workflow does NOT run on normal commits - it only runs on schedule or when manually triggered to avoid creating too many PRs.
 
 Here's a real-world example from [christopher-eller.de](https://github.com/chriopter/christopher-eller.de):
 
