@@ -6,7 +6,7 @@
 A reuseable Workflow to automate the building & updating of a Hugo site with a single workflow file!
 
 
-> **Note:** Primarly LLM Code - use with caution. Be aware of cascading triggering, potential breaking changes from automatic updates, resource consumption. Workflows have permissions to modify repository content.
+> **Note:** Primarly LLM Code - use with caution. Be aware of cascading triggering, potential breaking changes from automatic updates (even major!), resource consumption. Workflows have permissions to modify repository content.
 
 
 ## Features & Workflow Triggers
