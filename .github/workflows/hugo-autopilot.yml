@@ -65,8 +65,10 @@ jobs:
 
   # Build and deploy Hugo site
   build:
-    needs: router
-    if: needs.router.outputs.run_build == 'true'
+    needs: [router, update]
+    if: |
+      needs.router.outputs.run_build == 'true' && 
+      (needs.router.outputs.run_update != 'true' || needs.update.result == 'skipped' || needs.update.outputs.pr_created != 'true')
     permissions:
       contents: read
       pages: write

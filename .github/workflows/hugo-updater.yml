@@ -18,6 +18,10 @@ on:
         required: false
         type: string
         default: 'Update Hugo:'
+    outputs:
+      pr_created:
+        description: 'Whether a PR was created for a Hugo update'
+        value: ${{ jobs.update.outputs.pr_created }}
 
 permissions:
   contents: write
@@ -26,6 +30,8 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
+    outputs:
+      pr_created: ${{ steps.set-outputs.outputs.pr_created }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -85,15 +91,22 @@ jobs:
           PULL_REQUEST: "${{ steps.create-pr.outputs.pull-request-number }}"
       
       - name: PR Creation Status
-        if: steps.check.outputs.NEEDS_UPDATE == 'true'
+        id: set-outputs
         run: |
-          if [ -n "${{ steps.create-pr.outputs.pull-request-number }}" ]; then
+          # Default to false
+          echo "pr_created=false" >> $GITHUB_OUTPUT
+          
+          # Check if PR was created
+          if [ "${{ steps.check.outputs.NEEDS_UPDATE }}" == "true" ] && [ -n "${{ steps.create-pr.outputs.pull-request-number }}" ]; then
+            echo "pr_created=true" >> $GITHUB_OUTPUT
             echo "✅ Pull request #${{ steps.create-pr.outputs.pull-request-number }} created successfully"
             echo "URL: ${{ steps.create-pr.outputs.pull-request-url }}"
-          else
+          elif [ "${{ steps.check.outputs.NEEDS_UPDATE }}" == "true" ]; then
             echo "❌ Failed to create pull request"
             echo "This could be due to no changes being detected or an error in the PR creation process"
             exit 1
+          else
+            echo "No Hugo update needed"
           fi
 
       - name: Delete branch after merge
