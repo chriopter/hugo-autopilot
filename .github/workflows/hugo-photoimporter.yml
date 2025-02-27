@@ -1,0 +1,87 @@
+name: Hugo Photo Importer
+
+on:
+  workflow_call:
+    inputs:
+      import_directory:
+        description: 'Directory containing photos to import'
+        required: false
+        type: string
+        default: 'import'
+      content_directory:
+        description: 'Directory to store processed photos'
+        required: false
+        type: string
+        default: 'content/photos'
+      trigger_build:
+        description: 'Whether to trigger a Hugo build after processing'
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  process-photos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
+      
+      - name: Process new photos
+        shell: bash
+        run: |
+          convert_filename() {
+            echo "$1" | tr '[:upper:]' '[:lower:]' | sed -E 's/[[:space:]]+/-/g'
+          }
+          
+          create_title() {
+            echo "$1" | sed -E 's/-/ /g' | awk '{for(i=1;i<=NF;i++)sub(/./,toupper(substr($i,1,1)),$i)}1'
+          }
+          
+          # Count photos to process
+          photo_count=$(find ${{ inputs.import_directory }} -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.heic" -o -name "*.png" \) | wc -l)
+          echo "Processing $photo_count photo(s)"
+          
+          for img in ${{ inputs.import_directory }}/*.{jpg,jpeg,heic,png}; do
+            [[ -e "$img" ]] || continue
+            
+            ORIG_NAME=$(basename "$img")
+            EXT="${ORIG_NAME##*.}"
+            NAME_NO_EXT="${ORIG_NAME%.*}"
+            
+            CLEAN_NAME=$(convert_filename "$NAME_NO_EXT")
+            TITLE=$(create_title "$NAME_NO_EXT")
+            
+            CONTENT_PATH="${{ inputs.content_directory }}/$CLEAN_NAME"
+            mkdir -p "$CONTENT_PATH"
+            
+            mv "$img" "$CONTENT_PATH/$CLEAN_NAME.$EXT"
+            
+            printf "+++\ndate = '%s'\ntitle = \"%s\"\n+++\n" "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" "$TITLE" > "$CONTENT_PATH/index.md"
+            
+            echo "Processed: $ORIG_NAME -> $CLEAN_NAME.$EXT"
+          done
+      
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add ${{ inputs.content_directory }}/ ${{ inputs.import_directory }}/
+          git commit -m "Process new photos" || echo "No changes to commit"
+          git push
+      
+      - name: Trigger Hugo workflow
+        if: inputs.trigger_build
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          event-type: trigger-hugo-build
+          client-payload: '{}'
