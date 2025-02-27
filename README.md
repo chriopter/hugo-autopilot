@@ -28,8 +28,9 @@ Here's a real-world example from [christopher-eller.de](https://github.com/chrio
 
 ## Installation
 
-1. [ ] Create a `.hugoversion` file in your repository root with your Hugo version (e.g., `0.123.8`)
-2. [ ] Copy the dependabot.yml template to your repository at `.github/dependabot.yml`:
+1. **Create a `.hugoversion` file** in your repository root with your Hugo version (e.g., `0.123.8`)
+
+2. **Copy the dependabot.yml template** to your repository at `.github/dependabot.yml`:
 
 <details>
 <summary>Click to expand dependabot.yml template</summary>
@@ -76,24 +77,13 @@ updates:
 ```
 </details>
 
-3. [ ] Enable required GitHub settings: In repository settings, enable Actions with write permissions, PR creation, and auto-merge.
+3. **Enable required GitHub settings**: In repository settings, enable Actions with write permissions, PR creation, and auto-merge.
 
-4. [ ] Create the following workflow file:
+4. **Create the workflow file** at `.github/workflows/hugo-autopilot.yml` (see below)
 
-### `.github/workflows/hugo-autopilot.yml`
+## Workflow File
 
-5. (Optional) To trigger the Hugo build from other workflows, use the repository_dispatch event:
-
-<details>
-<summary>Click to expand external trigger example</summary>
-
-```yaml
-- name: Trigger Hugo build
-  uses: peter-evans/repository-dispatch@v3
-  with:
-    event-type: trigger-hugo-build
-```
-</details>
+Create this file at `.github/workflows/hugo-autopilot.yml`:
 
 ```yaml
 name: Hugo Autopilot
@@ -136,6 +126,21 @@ jobs:
       # Method to use when merging PRs
       merge_method: 'squash'
 ```
+
+### External Triggers
+
+To trigger the Hugo build from other workflows, use the repository_dispatch event:
+
+<details>
+<summary>Click to expand external trigger example</summary>
+
+```yaml
+- name: Trigger Hugo build
+  uses: peter-evans/repository-dispatch@v3
+  with:
+    event-type: trigger-hugo-build
+```
+</details>
 
 ## Credits
 
