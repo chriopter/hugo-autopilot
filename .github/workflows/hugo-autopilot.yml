@@ -126,7 +126,7 @@ jobs:
     uses: chriopter/hugo-autopilot/.github/workflows/hugo-updater.yml@main
     with:
       hugo_version_file: ${{ inputs.hugo_version_file }}
-      update_state_file: ${{ inputs.update_state_file }}
+      pr_title_prefix: ${{ inputs.pr_title_prefix }}
 
   # Build and deploy Hugo site
   build:
