@@ -15,7 +15,8 @@ Hugo Autopilot combines three workflows (Builder, Updater, PR Merger) into a sin
 
 | Event Type | Hugo Builder | Hugo Updater | PR Merger |
 |------------|:----------------------------------:|:-----------------------------------:|:------------------------------:|
-| | **Rebuilds site<br>cache-free**<br><br>Triggered by:<br>content changes,<br>weekly checks,<br>manual triggers,<br>after Hugo updates | **Updates to newest<br>Hugo version**<br><br>Triggered by: weekly schedule,<br>manual triggers.<br><br>When an update is found, it<br>creates a PR with a specific title prefix,<br>auto-merges it, and triggers a new<br>build. | **Auto-merges<br>Dependabot<br>PRs**<br><br>Triggered by:<br>dependency updates,<br>manual triggers |
+| Description | **Rebuilds site<br>cache-free** | **Updates to newest<br>Hugo version** | **Auto-merges<br>Dependabot<br>PRs** |
+| Triggers | **Triggered by:**<br>content changes,<br>weekly checks,<br>manual triggers,<br>after Hugo updates | **Triggered by:**<br>weekly schedule,<br>manual triggers.<br><br>When an update is found, it<br>creates a PR with a specific title prefix,<br>auto-merges it, and triggers a new<br>build. | **Triggered by:**<br>dependency updates,<br>manual triggers |
 | Content Change<br>(`push` to main) | ✅ | ❌ | ❌ |
 | Weekly Check<br>(`schedule` weekly) | ✅ | ✅ | ❌ |
 | After Hugo Update<br>(`repository_dispatch`) | ✅ | ❌ | ❌ |
