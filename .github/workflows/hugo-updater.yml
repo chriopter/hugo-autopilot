@@ -102,10 +102,44 @@ jobs:
           # Delete the branch
           git push origin --delete ${{ inputs.update_branch }} || echo "Branch may already be deleted"
           
+      # Debug information before triggering Hugo Builder
+      - name: Debug Repository Info
+        if: steps.create-pr.outputs.pull-request-number
+        run: |
+          echo "::group::Repository Information"
+          echo "Repository: ${{ github.repository }}"
+          echo "Repository Owner: ${{ github.repository_owner }}"
+          echo "Event Name: ${{ github.event_name }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "::endgroup::"
+          
+          echo "::group::PR Information"
+          echo "PR Number: ${{ steps.create-pr.outputs.pull-request-number }}"
+          echo "PR URL: ${{ steps.create-pr.outputs.pull-request-url }}"
+          echo "::endgroup::"
+          
+          echo "::group::Token Permissions"
+          echo "GITHUB_TOKEN permissions: contents:write, pull-requests:write"
+          echo "::endgroup::"
+
       - name: Trigger Hugo Builder
         if: steps.create-pr.outputs.pull-request-number
+        id: dispatch
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           event-type: hugo-autopilot-build
           repository: ${{ github.repository }}
+          
+      # Debug information after triggering Hugo Builder
+      - name: Debug Dispatch Result
+        if: steps.create-pr.outputs.pull-request-number
+        run: |
+          echo "::group::Dispatch Result"
+          echo "Dispatch Step Status: ${{ steps.dispatch.outcome }}"
+          echo "Dispatch Step Conclusion: ${{ steps.dispatch.conclusion }}"
+          echo "::endgroup::"
+          
+          echo "::notice::🔄 Triggered hugo-autopilot-build event for ${{ github.repository }}"
+          echo "::notice::⚠️ If the build is not triggered, check repository settings to ensure workflow permissions allow repository dispatch events"
