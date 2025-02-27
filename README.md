@@ -82,6 +82,19 @@ updates:
 
 ### `.github/workflows/hugo-autopilot.yml`
 
+5. (Optional) To trigger the Hugo build from other workflows, use the repository_dispatch event:
+
+<details>
+<summary>Click to expand external trigger example</summary>
+
+```yaml
+- name: Trigger Hugo build
+  uses: peter-evans/repository-dispatch@v3
+  with:
+    event-type: trigger-hugo-build
+```
+</details>
+
 ```yaml
 name: Hugo Autopilot
 
