@@ -41,16 +41,12 @@ flowchart TD
     BuildSite --> End
 ```
 
-| Event Type | Hugo Builder | Hugo Updater | PR Merger |
-|------------|:----------------------------------:|:-----------------------------------:|:------------------------------:|
-| | Re-Builds Site Cache-Free | Updates to newest Hugoversion | Accepts all Dependabot PRs |
-| On Content Change<br>(`push` to main) | ✅ | ❌ | ❌ |
-| On Weekly Check<br>(`schedule` weekly) | ❌ | ✅ | ❌ |
-| After Hugo Update<br>(`repository_dispatch`)<br>(`hugo-autopilot-build`) | ✅ | ❌ | ❌ |
-| On Dependency Update<br>(`pull_request`) | ❌ | ❌ | ✅ |
-| On Manual Trigger<br>(`workflow_dispatch`) | ✅ | ✅ | ✅ |
+**Workflow Components:**
+- **Hugo Builder:** Rebuilds site cache-free (Triggered by: content changes, manual triggers, after Hugo updates)
+- **Hugo Updater:** Updates to newest Hugo version (Triggered by: weekly schedule, manual triggers)
+- **PR Merger:** Auto-merges Dependabot PRs (Triggered by: dependency updates, manual triggers)
 
-Note: Dependency Updates are also used by this repo to always use newest sub-workflows like peaceiris/actions-hugo.
+Note: Dependency updates are also used by this repo to always use newest sub-workflows like peaceiris/actions-hugo.
 
 ### PR-Based State Management
 
