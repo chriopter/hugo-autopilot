@@ -50,6 +50,15 @@ jobs:
           fi
           
           echo "Using PR number: $PR_NUMBER"
-          gh pr merge $PR_NUMBER --auto --${{ inputs.merge_method }} --${{ inputs.commit_message }}
+          
+          # Use the correct syntax for commit message
+          if [ "${{ inputs.commit_message }}" = "pull-request-title" ]; then
+            # Use PR title as commit message
+            PR_TITLE=$(gh pr view $PR_NUMBER --json title -q .title)
+            gh pr merge $PR_NUMBER --auto --${{ inputs.merge_method }} -t "$PR_TITLE"
+          else
+            # Use custom commit message
+            gh pr merge $PR_NUMBER --auto --${{ inputs.merge_method }} -t "${{ inputs.commit_message }}"
+          fi
         env:
           GITHUB_TOKEN: ${{ github.token }}
