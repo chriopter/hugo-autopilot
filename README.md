@@ -82,9 +82,17 @@ updates:
    - In repository settings → Actions → General → Workflow permissions:
      - Select "Read and write permissions"
      - Check "Allow GitHub Actions to create and approve pull requests"
-   - This ensures the workflow can trigger other workflows after Hugo updates
+     - Enable "Allow GitHub Actions to request the id-token write permission"
+   - This ensures the workflow can trigger other workflows and handle cross-organization permissions
 
-4. **Create the workflow file** at `.github/workflows/hugo-autopilot.yml` (see below)
+4. **For cross-organization usage**:
+   - If you're using this workflow from a different GitHub organization/account than `chriopter`:
+     - The above permissions settings are especially important
+     - No additional tokens or secrets are needed
+     - Just ensure all the permissions are enabled as described above
+   - This allows the workflow to function properly across organization boundaries
+
+5. **Create the workflow file** at `.github/workflows/hugo-autopilot.yml` (see below)
 
 ## Workflow File
 
@@ -123,6 +131,11 @@ jobs:
   # Single job that routes to the appropriate workflow based on the trigger
   autopilot:
     uses: chriopter/hugo-autopilot/.github/workflows/hugo-autopilot.yml@main
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+      pull-requests: write
     with:
       # Path to your Hugo version file
       hugo_version_file: '.hugoversion'
