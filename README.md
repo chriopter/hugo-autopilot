@@ -25,7 +25,7 @@ Hugo Autopilot combines three workflows (Builder, Updater, PR Merger) into a sin
 
 \* Hugo Updater Creates PR, Merges it and dispatches a Build 
 
-**Note:** Dependency updates are also used by this repo to always use newest sub-workflows like peaceiris/actions-hugo.
+**Note:** Auto-Dependency updates are also used by this repo to always use newest sub-workflows like peaceiris/actions-hugo.
 
 ## Prepare Repo
 
