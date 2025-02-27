@@ -26,7 +26,7 @@ Note: Dependency Updates are also used by this repo to always use newest sub-wor
 
 Here's a real-world example from [christopher-eller.de](https://github.com/chriopter/christopher-eller.de):
 
-## Installation
+## Prepare Repo
 
 1. **Create a `.hugoversion` file** in your repository root with your Hugo version (e.g., `0.123.8`)
 
