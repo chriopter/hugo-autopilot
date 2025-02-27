@@ -1,0 +1,100 @@
+name: Hugo Updater
+
+on:
+  workflow_call:
+    inputs:
+      hugo_version_file:
+        description: 'Path to file containing Hugo version'
+        required: false
+        type: string
+        default: '.hugoversion'
+      update_branch:
+        description: 'Branch name to use for update PRs'
+        required: false
+        type: string
+        default: 'update-hugo'
+      pr_title_prefix:
+        description: 'Prefix for PR titles'
+        required: false
+        type: string
+        default: 'Update Hugo:'
+
+jobs:
+  check-for-updates:
+    runs-on: ubuntu-latest
+    outputs:
+      current_version: ${{ steps.current-version.outputs.version }}
+      latest_version: ${{ steps.latest-version.outputs.version }}
+      update_available: ${{ steps.check-update.outputs.update_available }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get current Hugo version
+        id: current-version
+        run: |
+          CURRENT_VERSION=$(cat ${{ inputs.hugo_version_file }})
+          echo "version=${CURRENT_VERSION}" >> $GITHUB_OUTPUT
+          echo "Current Hugo version: ${CURRENT_VERSION}"
+
+      - name: Get latest Hugo version
+        id: latest-version
+        run: |
+          LATEST_VERSION=$(curl -s https://api.github.com/repos/gohugoio/hugo/releases/latest | jq -r '.tag_name' | sed 's/^v//')
+          echo "version=${LATEST_VERSION}" >> $GITHUB_OUTPUT
+          echo "Latest Hugo version: ${LATEST_VERSION}"
+
+      - name: Check if update is available
+        id: check-update
+        run: |
+          CURRENT_VERSION="${{ steps.current-version.outputs.version }}"
+          LATEST_VERSION="${{ steps.latest-version.outputs.version }}"
+          
+          if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
+            echo "update_available=true" >> $GITHUB_OUTPUT
+            echo "Update available: ${CURRENT_VERSION} -> ${LATEST_VERSION}"
+          else
+            echo "update_available=false" >> $GITHUB_OUTPUT
+            echo "No update available. Current version is latest: ${CURRENT_VERSION}"
+          fi
+
+  create-update-pr:
+    needs: check-for-updates
+    if: needs.check-for-updates.outputs.update_available == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create update branch
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git checkout -b ${{ inputs.update_branch }}
+
+      - name: Update Hugo version
+        run: |
+          echo "${{ needs.check-for-updates.outputs.latest_version }}" > ${{ inputs.hugo_version_file }}
+          git add ${{ inputs.hugo_version_file }}
+          git commit -m "Update Hugo from ${{ needs.check-for-updates.outputs.current_version }} to ${{ needs.check-for-updates.outputs.latest_version }}"
+          git push --set-upstream origin ${{ inputs.update_branch }} --force
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: ${{ inputs.update_branch }}
+          delete-branch: true
+          title: "${{ inputs.pr_title_prefix }} ${{ needs.check-for-updates.outputs.current_version }} → ${{ needs.check-for-updates.outputs.latest_version }}"
+          body: |
+            This PR updates Hugo from version ${{ needs.check-for-updates.outputs.current_version }} to ${{ needs.check-for-updates.outputs.latest_version }}.
+            
+            ## Changelog
+            See the [Hugo release notes](https://github.com/gohugoio/hugo/releases/tag/v${{ needs.check-for-updates.outputs.latest_version }}) for details.
+            
+            *This PR was automatically created by the Hugo Updater workflow.*
+          labels: |
+            dependencies
+            automated

@@ -1,0 +1,12 @@
+name: Dependabot Auto-merge
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  dependabot-automerge:
+    uses: ../.github/workflows/pr-merger.yml@main
+    with:
+      merge_method: 'squash'

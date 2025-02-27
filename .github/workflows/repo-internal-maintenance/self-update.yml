@@ -1,0 +1,15 @@
+name: Self Update
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly on Monday
+  workflow_dispatch:
+
+jobs:
+  update-hugo:
+    uses: ../.github/workflows/hugo-updater.yml@main
+    with:
+      hugo_version_file: '.hugoversion'
+    permissions:
+      contents: write
+      pull-requests: write
