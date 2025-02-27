@@ -43,28 +43,10 @@ flowchart TD
 
 **Workflow Components:**
 - **Hugo Builder:** Rebuilds site cache-free (Triggered by: content changes, manual triggers, after Hugo updates)
-- **Hugo Updater:** Updates to newest Hugo version (Triggered by: weekly schedule, manual triggers)
+- **Hugo Updater:** Updates to newest Hugo version (Triggered by: weekly schedule, manual triggers). Uses PR-based state management to prevent race conditions - when an update is found, it creates a PR with a specific title prefix, which prevents builds until the PR is merged, ensuring the site is always built with the correct Hugo version.
 - **PR Merger:** Auto-merges Dependabot PRs (Triggered by: dependency updates, manual triggers)
 
 Note: Dependency updates are also used by this repo to always use newest sub-workflows like peaceiris/actions-hugo.
-
-### PR-Based State Management
-
-Hugo Autopilot includes a PR-based state management system that prevents race conditions between Hugo updates and site builds:
-
-1. **Problem**: Without state management, the workflow might build with an old Hugo version while simultaneously updating to a new version.
-
-2. **Solution**: The workflow uses open PRs as the state tracking mechanism:
-   - When a Hugo update is needed, the system creates a PR with a specific title prefix
-   - Before building, the workflow checks for open PRs with this title prefix
-   - If an update PR is open, builds are skipped until the PR is merged
-   - After the PR is merged, a fresh build is triggered with the new Hugo version
-
-3. **Benefits**:
-   - **Native Git Integration**: Uses GitHub's existing mechanisms rather than custom state files
-   - **Self-Documenting**: The PR itself serves as visible documentation of the pending update
-   - **Automatic Cleanup**: When the PR is merged/closed, the state naturally clears itself
-   - **Better Visibility**: Users can see the pending update in the GitHub UI
 
 Here's a real-world example from [christopher-eller.de](https://github.com/chriopter/christopher-eller.de):
 
