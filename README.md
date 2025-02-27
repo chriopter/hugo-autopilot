@@ -19,7 +19,7 @@ Hugo Autopilot combines three powerful workflows into a single, easy-to-use solu
 | On Content Change<br>(`push` to main) | ✅ | ❌ | ❌ |
 | On Weekly Check<br>(`schedule` weekly) | ✅ (with new Version) | ✅ | ❌ |
 | On Dependency Update<br>(`pull_request`) | ❌ | ❌ | ✅ |
-| On External Trigger hugo-autopilot-build <br>(`repository_dispatch`) | ✅ | ❌ | ❌ |
+| On External Trigger <br>(`repository_dispatch`)<br>(`hugo-autopilot-build`) | ✅ | ❌ | ❌ |
 | On Manual Trigger<br>(`workflow_dispatch`) | ✅ | ✅ | ✅ |
 
 Note: Dependency Updates are also used by this repo to always use newest sub-workflows like peaceiris/actions-hugo.
