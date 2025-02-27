@@ -18,6 +18,11 @@ on:
         required: false
         type: string
         default: 'squash'
+      pr_title_prefix:
+        description: 'Prefix for Hugo update PR titles'
+        required: false
+        type: string
+        default: 'Update Hugo:'
 
 # Sets permissions of the GITHUB_TOKEN to allow all required operations
 permissions:
@@ -34,6 +39,8 @@ jobs:
       run_build: ${{ steps.route.outputs.run_build }}
       run_update: ${{ steps.route.outputs.run_update }}
       run_automerge: ${{ steps.route.outputs.run_automerge }}
+      event_name: ${{ github.event_name }}
+      clear_pending: ${{ steps.route.outputs.clear_pending }}
     steps:
       - name: Determine jobs to run
         id: route
@@ -42,8 +49,9 @@ jobs:
           echo "run_build=false" >> $GITHUB_OUTPUT
           echo "run_update=false" >> $GITHUB_OUTPUT
           echo "run_automerge=false" >> $GITHUB_OUTPUT
+          echo "clear_pending=false" >> $GITHUB_OUTPUT
           
-          # Set flags based on event type
+          # Set flags based on event type with priority handling
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             # Manual trigger runs all jobs
             echo "run_build=true" >> $GITHUB_OUTPUT
@@ -58,38 +66,19 @@ jobs:
           elif [[ "${{ github.event_name }}" == "repository_dispatch" ]]; then
             # Repository dispatch only runs build job
             echo "run_build=true" >> $GITHUB_OUTPUT
+            
+            # Check if we should clear pending state
+            if [[ "${{ github.event.client_payload.clear_pending }}" == "true" ]]; then
+              echo "clear_pending=true" >> $GITHUB_OUTPUT
+            fi
           elif [[ "${{ github.event_name }}" == "push" ]]; then
             # Run build job for all pushes
             echo "run_build=true" >> $GITHUB_OUTPUT
           fi
+          
+          echo "Event type: ${{ github.event_name }}"
 
-  # Build and deploy Hugo site
-  build:
-    needs: [router, update]
-    if: |
-      needs.router.outputs.run_build == 'true' && 
-      (needs.router.outputs.run_update != 'true' || needs.update.result == 'skipped' || needs.update.outputs.pr_created != 'true')
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    uses: chriopter/hugo-autopilot/.github/workflows/hugo-builder.yml@main
-    with:
-      hugo_version_file: ${{ inputs.hugo_version_file }}
-      enable_git_info: ${{ inputs.enable_git_info }}
-
-  # Update Hugo version
-  update:
-    needs: router
-    if: needs.router.outputs.run_update == 'true'
-    permissions:
-      contents: write
-      pull-requests: write
-    uses: chriopter/hugo-autopilot/.github/workflows/hugo-updater.yml@main
-    with:
-      hugo_version_file: ${{ inputs.hugo_version_file }}
-
-  # Auto-merge Dependabot PRs
+  # Auto-merge Dependabot PRs (highest priority)
   automerge:
     needs: router
     if: needs.router.outputs.run_automerge == 'true'
@@ -99,3 +88,58 @@ jobs:
     uses: chriopter/hugo-autopilot/.github/workflows/dependabot-merger.yml@main
     with:
       merge_method: ${{ inputs.merge_method }}
+
+  # Check for pending Hugo update PRs
+  check-state:
+    needs: router
+    if: needs.router.outputs.run_build == 'true' || needs.router.outputs.run_update == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      update_pending: ${{ steps.check-prs.outputs.update_pending }}
+    steps:
+      - name: Check for pending Hugo update PRs
+        id: check-prs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_TITLE_PREFIX: ${{ inputs.pr_title_prefix }}
+        run: |
+          # Search for open PRs with title containing the PR title prefix
+          PR_COUNT=$(gh pr list --search "$PR_TITLE_PREFIX in:title state:open" --json number | jq length)
+          
+          if [ "$PR_COUNT" -gt 0 ]; then
+            echo "update_pending=true" >> $GITHUB_OUTPUT
+            echo "Found $PR_COUNT pending Hugo update PRs"
+          else
+            echo "update_pending=false" >> $GITHUB_OUTPUT
+            echo "No pending Hugo update PRs found"
+          fi
+
+  # Update Hugo version
+  update:
+    needs: [router, check-state, automerge]
+    if: |
+      needs.router.outputs.run_update == 'true' && 
+      (needs.router.outputs.event_name == 'schedule' || needs.router.outputs.event_name == 'workflow_dispatch')
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: chriopter/hugo-autopilot/.github/workflows/hugo-updater.yml@main
+    with:
+      hugo_version_file: ${{ inputs.hugo_version_file }}
+      update_state_file: ${{ inputs.update_state_file }}
+
+  # Build and deploy Hugo site
+  build:
+    needs: [router, check-state, update]
+    if: |
+      needs.router.outputs.run_build == 'true' && 
+      (needs.check-state.outputs.update_pending != 'true') &&
+      (needs.router.outputs.run_update != 'true' || needs.update.result == 'skipped' || needs.update.outputs.pr_created != 'true')
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: chriopter/hugo-autopilot/.github/workflows/hugo-builder.yml@main
+    with:
+      hugo_version_file: ${{ inputs.hugo_version_file }}
+      enable_git_info: ${{ inputs.enable_git_info }}

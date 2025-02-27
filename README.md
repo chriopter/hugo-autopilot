@@ -9,9 +9,41 @@ A reuseable Workflow to automate the building & updating of a Hugo site with a s
 > **Note:** Primarly LLM Code - use with caution. Be aware of cascading triggering, potential breaking changes from automatic updates (even major!), resource consumption. Workflows have permissions to modify repository content.
 
 
-## Features & Workflow Triggers
+## Features & Workflow Architecture
 
-Hugo Autopilot combines three powerful workflows into a single, easy-to-use solution that you can reference from your Hugo site with just one file. The system uses a router mechanism to determine which workflows to run based on the trigger event:
+Hugo Autopilot combines three powerful workflows into a single, easy-to-use solution that you can reference from your Hugo site with just one file. The system uses a smart router mechanism with state management to determine which workflows to run based on the trigger event:
+
+```mermaid
+flowchart TD
+    Start[Workflow Trigger] --> Router[Router Job]
+    
+    Router --> PR{PR Event?}
+    PR -->|Yes| Automerge[Handle Dependabot PRs]
+    
+    Router --> Schedule{Schedule Event?}
+    Schedule -->|Yes| CheckUpdate[Check Hugo Version]
+    CheckUpdate --> NeedsUpdate{Update Available?}
+    NeedsUpdate -->|Yes| UpdateHugo[Update Hugo Version]
+    UpdateHugo --> CreatePR[Create & Auto-Merge PR]
+    CreatePR --> SetState[Set Update Pending State]
+    SetState --> DispatchBuild[Dispatch Build Event]
+    
+    NeedsUpdate -->|No| SkipUpdate[Skip Update]
+    
+    Router --> Build{Build Trigger?}
+    Build -->|Yes| CheckPending{Pending Update?}
+    CheckPending -->|Yes| SkipBuild[Skip Build]
+    CheckPending -->|No| BuildSite[Build & Deploy Site]
+    
+    DispatchBuild --> NewWorkflow[New Workflow Run]
+    NewWorkflow --> ClearState[Clear Pending State]
+    ClearState --> BuildSite
+    
+    Automerge --> End[End]
+    SkipUpdate --> End
+    SkipBuild --> End
+    BuildSite --> End
+```
 
 | Event Type | Hugo Builder | Hugo Updater | PR Merger |
 |------------|:----------------------------------:|:-----------------------------------:|:------------------------------:|
@@ -23,6 +55,24 @@ Hugo Autopilot combines three powerful workflows into a single, easy-to-use solu
 | On Manual Trigger<br>(`workflow_dispatch`) | ✅ | ✅ | ✅ |
 
 Note: Dependency Updates are also used by this repo to always use newest sub-workflows like peaceiris/actions-hugo.
+
+### State Management System
+
+Hugo Autopilot includes a state management system that prevents race conditions between Hugo updates and site builds:
+
+1. **Problem**: Without state management, the workflow might build with an old Hugo version while simultaneously updating to a new version.
+
+2. **Solution**: The workflow now tracks update state in a file (`.hugo_update_state` by default):
+   - When a Hugo update PR is created, the system sets an "update pending" state
+   - Build jobs check this state and skip building if an update is pending
+   - After the PR is merged and the repository dispatch triggers a new workflow run, the state is cleared
+   - This ensures the site is only built with the latest Hugo version
+
+3. **Benefits**:
+   - Prevents building with outdated Hugo versions
+   - Eliminates race conditions between updates and builds
+   - Provides self-healing through automatic state cleanup
+   - Maintains a clear audit trail of update activities
 
 Here's a real-world example from [christopher-eller.de](https://github.com/chriopter/christopher-eller.de):
 
@@ -129,6 +179,8 @@ jobs:
       enable_git_info: true
       # Method to use when merging PRs
       merge_method: 'squash'
+      # Path to file for tracking update state (optional)
+      update_state_file: '.hugo_update_state'
 ```
 
 ### External Triggers
