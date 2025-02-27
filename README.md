@@ -4,6 +4,7 @@
 [![license](https://img.shields.io/github/license/chriopter/hugo-autopilot.svg)](https://github.com/chriopter/hugo-autopilot/blob/main/LICENSE)
 
 A reuseable Workflow to automate the building & updating of a Hugo site with a single workflow file!
+
 Used for example here [christopher-eller.de](https://github.com/chriopter/christopher-eller.de).
 
 > **Note:** Primarly LLM Code - use with caution. Be aware of cascading triggering, potential breaking changes from automatic updates (even major!), resource consumption. Workflows have permissions to modify repository content.
