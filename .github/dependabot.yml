@@ -6,7 +6,7 @@ updates:
     schedule:
       interval: "weekly"
     # Limit to 5 open pull requests for version updates
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     # Add labels to pull requests
     labels:
       - "dependencies"
