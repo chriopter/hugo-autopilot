@@ -15,14 +15,13 @@ Hugo Autopilot provides a set of reusable GitHub Actions workflows that automate
 
 Hugo Autopilot combines three powerful workflows into a single, easy-to-use solution that you can reference from your Hugo site with just one file. The system uses a router mechanism to determine which workflows to run based on the trigger event:
 
-| Event Type | Hugo Builder<br><span style="font-weight:normal">(Builds & Deploys)</span> | Hugo Updater<br><span style="font-weight:normal">(Auto-Updates Hugo)</span> | PR Merger<br><span style="font-weight:normal">(Auto-Merges PRs)</span> |
+| Event Type | Hugo Builder | Hugo Updater | PR Merger |
 |------------|:----------------------------------:|:-----------------------------------:|:------------------------------:|
-| `push` to main | ✅ | ❌ | ❌ |
-| `schedule` (weekly) | ❌ | ✅ | ❌ |
-| `pull_request` | ❌ | ❌ | ✅ |
-| `repository_dispatch` | ✅ | ❌ | ❌ |
-| `workflow_dispatch` (manual) | ✅ | ✅ | ✅ |
-
+| On Content Change (`push` to main) | ✅ | ❌ | ❌ |
+| On Weekly Check (`schedule` weekly) | ❌ | ✅ | ❌ |
+| On Dependency Update (`pull_request`) | ❌ | ❌ | ✅ |
+| On External Trigger (`repository_dispatch`) | ✅ | ❌ | ❌ |
+| On Manual Trigger (`workflow_dispatch`) | ✅ | ✅ | ✅ |
 
 Here's a real-world example from [christopher-eller.de](https://github.com/chriopter/christopher-eller.de):
 
