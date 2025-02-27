@@ -78,7 +78,11 @@ updates:
 ```
 </details>
 
-3. **Enable required GitHub settings**: In repository settings, enable Actions with write permissions, PR creation, and auto-merge.
+3. **Enable required GitHub settings**: 
+   - In repository settings → Actions → General → Workflow permissions:
+     - Select "Read and write permissions"
+     - Check "Allow GitHub Actions to create and approve pull requests"
+   - This ensures the workflow can trigger other workflows after Hugo updates
 
 4. **Create the workflow file** at `.github/workflows/hugo-autopilot.yml` (see below)
 
