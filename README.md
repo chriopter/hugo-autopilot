@@ -129,7 +129,7 @@ jobs:
 
 ### External Triggers
 
-The hugo-autopilot.yml file you created above is configured to listen for the `repository_dispatch` event with type `trigger-hugo-autopilot`. You can use this to trigger your Hugo site build from other workflows:
+The hugo-autopilot.yml file you created above is configured to listen for the `repository_dispatch` event with type `hugo-autopilot-build`. You can use this to trigger your Hugo site build from other workflows:
 
 <details>
 <summary>Click to expand external trigger example</summary>
