@@ -3,57 +3,43 @@
 [![Project status: active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![license](https://img.shields.io/github/license/chriopter/hugo-autopilot.svg)](https://github.com/chriopter/hugo-autopilot/blob/main/LICENSE)
 
+> **Note:** This project was primarily created with the assistance of AI (Claude from Anthropic).
+
 Automated CI/CD workflows for Hugo sites with automatic updates and dependency management.
 
 ## Overview
 
 Hugo Autopilot provides a set of reusable GitHub Actions workflows that automate the build, deployment, and maintenance of Hugo sites. These workflows can be referenced from your Hugo site repositories, allowing you to maintain your CI/CD configuration in a single place.
 
-## Features
+## Features & Workflows
 
-- **Automated Hugo Builds and Deployments**: Build and deploy your Hugo site to GitHub Pages with optimized settings
-- **Automatic Hugo Version Updates**: Automatically check for new Hugo versions and create PRs to update
-- **Dependabot Auto-merge**: Automatically merge Dependabot PRs for GitHub Actions dependencies
-- **Photo Import Processing**: Automatically process and import photos with proper formatting
-- **Centralized Workflow Management**: Maintain your workflows in one place and reference them from multiple repositories
+Hugo Autopilot offers four reusable workflows:
 
-## Reusable Workflows
+1. **Hugo Builder** (`hugo-builder.yml`) - Builds and deploys Hugo sites to GitHub Pages
+   - Parameters: `base_branch`, `hugo_version_file`, `ignore_paths`, `enable_git_info`
 
-### 1. Hugo Builder (`hugo-builder.yml`)
+2. **Hugo Updater** (`hugo-updater.yml`) - Checks for Hugo updates and creates PRs
+   - Parameters: `hugo_version_file`, `update_branch`, `pr_title_prefix`
 
-Builds and deploys a Hugo site to GitHub Pages.
+3. **PR Merger** (`pr-merger.yml`) - Auto-merges Dependabot PRs
+   - Parameters: `merge_method`, `commit_message`
 
-**Parameters:**
-- `base_branch`: The branch to build from (default: 'main')
-- `hugo_version_file`: Path to file containing Hugo version (default: '.hugoversion')
-- `ignore_paths`: Paths to ignore for triggering builds (default: 'import/\*\*,.github/\*\*')
-- `enable_git_info`: Enable Git info in Hugo build (default: true)
+4. **Hugo Photo Importer** (`hugo-photoimporter.yml`) - Processes and imports photos
+   - Parameters: `import_directory`, `content_directory`, `trigger_build`
 
-### 2. Hugo Updater (`hugo-updater.yml`)
+## Installation
 
-Checks for Hugo updates weekly and creates PRs to update the version.
+To set up Hugo Autopilot for your Hugo site:
 
-**Parameters:**
-- `hugo_version_file`: Path to file containing Hugo version (default: '.hugoversion')
-- `update_branch`: Branch name to use for update PRs (default: 'update-hugo')
-- `pr_title_prefix`: Prefix for PR titles (default: 'Update Hugo:')
-
-### 3. PR Merger (`pr-merger.yml`)
-
-Automatically merges Dependabot PRs.
-
-**Parameters:**
-- `merge_method`: Merge method to use (merge, squash, rebase) (default: 'squash')
-- `commit_message`: Commit message template (default: 'pull-request-title')
-
-### 4. Hugo Photo Importer (`hugo-photoimporter.yml`)
-
-Processes and imports photos to a Hugo site.
-
-**Parameters:**
-- `import_directory`: Directory containing photos to import (default: 'import')
-- `content_directory`: Directory to store processed photos (default: 'content/photos')
-- `trigger_build`: Whether to trigger a Hugo build after processing (default: true)
+1. [ ] Create a `.hugoversion` file in your repository root with your Hugo version (e.g., `0.123.8`)
+2. [ ] Copy the dependabot.yml template to your repository at `.github/dependabot.yml`
+3. [ ] Create the workflow files in your `.github/workflows/` directory:
+   - [ ] `build-hugo-page.yml`
+   - [ ] `update-hugo.yml`
+   - [ ] `automerge.yml`
+   - [ ] `process-photos.yml` (if using photo import feature)
+4. [ ] Ensure GitHub Pages is enabled for your repository
+5. [ ] Push changes to your repository
 
 ## Usage
 
@@ -172,12 +158,6 @@ This project builds upon and is inspired by several excellent GitHub Actions:
 - [peaceiris/actions-hugo](https://github.com/peaceiris/actions-hugo) - For Hugo setup and deployment patterns
 - [peter-evans/create-pull-request](https://github.com/peter-evans/create-pull-request) - For PR creation
 - [dependabot/fetch-metadata](https://github.com/dependabot/fetch-metadata) - For Dependabot PR handling
-
-## Requirements
-
-- A Hugo site hosted on GitHub
-- GitHub Pages enabled for the repository
-- A `.hugoversion` file in the root of your repository containing the Hugo version number (e.g., `0.123.8`)
 
 ## License
 
