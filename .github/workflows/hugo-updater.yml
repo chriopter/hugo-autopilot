@@ -101,3 +101,11 @@ jobs:
         run: |
           # Delete the branch
           git push origin --delete ${{ inputs.update_branch }} || echo "Branch may already be deleted"
+          
+      - name: Trigger Hugo Builder
+        if: steps.create-pr.outputs.pull-request-number
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          event-type: hugo-autopilot-build
+          repository: ${{ github.repository }}
