@@ -17,7 +17,8 @@ Hugo Autopilot combines three powerful workflows into a single, easy-to-use solu
 |------------|:----------------------------------:|:-----------------------------------:|:------------------------------:|
 | | Re-Builds Site Cache-Free | Updates to newest Hugoversion | Accepts all Dependabot PRs |
 | On Content Change<br>(`push` to main) | ✅ | ❌ | ❌ |
-| On Weekly Check<br>(`schedule` weekly) | ✅ <br> (with new Version) | ✅ | ❌ |
+| On Weekly Check<br>(`schedule` weekly) | ❌ | ✅ | ❌ |
+| After Hugo Update<br>(via repository dispatch) | ✅ | ❌ | ❌ |
 | On Dependency Update<br>(`pull_request`) | ❌ | ❌ | ✅ |
 | On External Trigger <br>(`repository_dispatch`)<br>(`hugo-autopilot-build`) | ✅ | ❌ | ❌ |
 | On Manual Trigger<br>(`workflow_dispatch`) | ✅ | ✅ | ✅ |
