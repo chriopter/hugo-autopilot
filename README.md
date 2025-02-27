@@ -11,7 +11,7 @@ A reuseable Workflow to automate the building & updating of a Hugo site with a s
 
 ## Features & Workflow Architecture
 
-Hugo Autopilot combines three powerful workflows into a single, easy-to-use solution that you can reference from your Hugo site with just one file. The system uses a smart router mechanism with state management to determine which workflows to run based on the trigger event:
+Hugo Autopilot combines three workflows (Builder, Updater, PR Merger) into a single solution, using a router to run the right workflow based on the trigger event:
 
 | Event Type | Hugo Builder | Hugo Updater | PR Merger |
 |------------|:----------------------------------:|:-----------------------------------:|:------------------------------:|
