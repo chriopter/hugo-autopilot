@@ -5,7 +5,7 @@
 
 Automated CI/CD workflows for Hugo sites with automatic updates and dependency management.
 
-> **Note:** This project was primarily created with LLM Code and should be used with caution.
+> **Note:** This project was primarily created with LLM Code and should be used with caution. Be aware of automation risks including cascading effects (workflows use other parent workflows), potential breaking changes from automatic updates, GitHub Actions resource consumption, and security considerations as workflows have permissions to modify repository content.
 
 ## Overview
 
@@ -139,18 +139,6 @@ jobs:
 
 For a real-world example of these workflows in action, see [christopher-eller.de](https://github.com/chriopter/christopher-eller.de).
 
-## Automation Risks
-
-While automation provides significant benefits, it's important to be aware of potential risks:
-
-1. **Cascading Automation**: These workflows are designed to trigger each other (e.g., photo import triggers site build). This can create cascading effects where one automated action leads to multiple subsequent actions.
-
-2. **Dependency Updates**: Automatic dependency updates might introduce breaking changes. While the PR approach allows for review, frequent updates require vigilance.
-
-3. **Resource Consumption**: Automated workflows consume GitHub Actions minutes. Monitor your usage to avoid unexpected charges.
-
-4. **Security Considerations**: Workflows have permissions to modify repository content and create PRs. Ensure your repository is properly secured.
-
 ## Credits
 
 This project builds upon and is inspired by several excellent GitHub Actions:
@@ -158,7 +146,3 @@ This project builds upon and is inspired by several excellent GitHub Actions:
 - [peaceiris/actions-hugo](https://github.com/peaceiris/actions-hugo) - For Hugo setup and deployment patterns
 - [peter-evans/create-pull-request](https://github.com/peter-evans/create-pull-request) - For PR creation
 - [dependabot/fetch-metadata](https://github.com/dependabot/fetch-metadata) - For Dependabot PR handling
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
