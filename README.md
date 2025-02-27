@@ -19,15 +19,15 @@ Hugo Autopilot combines three powerful workflows into a single, easy-to-use solu
 2. **Hugo Updater** - Checks for Hugo updates and creates PRs & Automerges to Rebuild site on newest version
 3. **PR Merger** - Auto-merges Dependabot PRs
 
-All these features are accessed through a single router workflow that you can reference from your Hugo site with just one file, as shown in this real-world example from [christopher-eller.de](https://github.com/chriopter/christopher-eller.de):
-
-### Installation
-
 This single workflow file handles all Hugo CI/CD tasks:
 - Building and deploying your site on push to main
 - Updating Hugo weekly with automerged PRs
 - Auto-merging Dependabot PRs
 - Responding to manual triggers and repository dispatch events
+
+All these features are accessed through a single router workflow that you can reference from your Hugo site with just one file, as shown in this real-world example from [christopher-eller.de](https://github.com/chriopter/christopher-eller.de):
+
+### Installation
 
 1. [ ] Create a `.hugoversion` file in your repository root with your Hugo version (e.g., `0.123.8`)
 2. [ ] Copy the dependabot.yml template to your repository at `.github/dependabot.yml`:
