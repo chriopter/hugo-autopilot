@@ -24,20 +24,19 @@ flowchart TD
     Schedule -->|Yes| CheckUpdate[Check Hugo Version]
     CheckUpdate --> NeedsUpdate{Update Available?}
     NeedsUpdate -->|Yes| UpdateHugo[Update Hugo Version]
-    UpdateHugo --> CreatePR[Create & Auto-Merge PR]
-    CreatePR --> SetState[Set Update Pending State]
-    SetState --> DispatchBuild[Dispatch Build Event]
+    UpdateHugo --> CreatePR[Create PR with Title Prefix]
+    CreatePR --> AutoMergePR[Auto-Merge PR]
+    AutoMergePR --> DispatchBuild[Dispatch Build Event]
     
     NeedsUpdate -->|No| SkipUpdate[Skip Update]
     
     Router --> Build{Build Trigger?}
-    Build -->|Yes| CheckPending{Pending Update?}
-    CheckPending -->|Yes| SkipBuild[Skip Build]
-    CheckPending -->|No| BuildSite[Build & Deploy Site]
+    Build -->|Yes| CheckPRs{Open Update PRs?}
+    CheckPRs -->|Yes| SkipBuild[Skip Build]
+    CheckPRs -->|No| BuildSite[Build & Deploy Site]
     
     DispatchBuild --> NewWorkflow[New Workflow Run]
-    NewWorkflow --> ClearState[Clear Pending State]
-    ClearState --> BuildSite
+    NewWorkflow --> BuildSite
     
     Automerge --> End[End]
     SkipUpdate --> End
@@ -56,23 +55,23 @@ flowchart TD
 
 Note: Dependency Updates are also used by this repo to always use newest sub-workflows like peaceiris/actions-hugo.
 
-### State Management System
+### PR-Based State Management
 
-Hugo Autopilot includes a state management system that prevents race conditions between Hugo updates and site builds:
+Hugo Autopilot includes a PR-based state management system that prevents race conditions between Hugo updates and site builds:
 
 1. **Problem**: Without state management, the workflow might build with an old Hugo version while simultaneously updating to a new version.
 
-2. **Solution**: The workflow now tracks update state in a file (`.hugo_update_state` by default):
-   - When a Hugo update PR is created, the system sets an "update pending" state
-   - Build jobs check this state and skip building if an update is pending
-   - After the PR is merged and the repository dispatch triggers a new workflow run, the state is cleared
-   - This ensures the site is only built with the latest Hugo version
+2. **Solution**: The workflow uses open PRs as the state tracking mechanism:
+   - When a Hugo update is needed, the system creates a PR with a specific title prefix
+   - Before building, the workflow checks for open PRs with this title prefix
+   - If an update PR is open, builds are skipped until the PR is merged
+   - After the PR is merged, a fresh build is triggered with the new Hugo version
 
 3. **Benefits**:
-   - Prevents building with outdated Hugo versions
-   - Eliminates race conditions between updates and builds
-   - Provides self-healing through automatic state cleanup
-   - Maintains a clear audit trail of update activities
+   - **Native Git Integration**: Uses GitHub's existing mechanisms rather than custom state files
+   - **Self-Documenting**: The PR itself serves as visible documentation of the pending update
+   - **Automatic Cleanup**: When the PR is merged/closed, the state naturally clears itself
+   - **Better Visibility**: Users can see the pending update in the GitHub UI
 
 Here's a real-world example from [christopher-eller.de](https://github.com/chriopter/christopher-eller.de):
 
@@ -179,8 +178,8 @@ jobs:
       enable_git_info: true
       # Method to use when merging PRs
       merge_method: 'squash'
-      # Path to file for tracking update state (optional)
-      update_state_file: '.hugo_update_state'
+      # Prefix for Hugo update PR titles (used for state tracking)
+      pr_title_prefix: 'Update Hugo:'
 ```
 
 ### External Triggers
