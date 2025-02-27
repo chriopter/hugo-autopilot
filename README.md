@@ -3,9 +3,9 @@
 [![Project status: active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![license](https://img.shields.io/github/license/chriopter/hugo-autopilot.svg)](https://github.com/chriopter/hugo-autopilot/blob/main/LICENSE)
 
-> **Note:** This project was primarily created with the assistance of AI (Claude from Anthropic).
-
 Automated CI/CD workflows for Hugo sites with automatic updates and dependency management.
+
+> **Note:** This project was primarily created with LLM Code and should be used with caution.
 
 ## Overview
 
