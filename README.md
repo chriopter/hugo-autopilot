@@ -112,7 +112,7 @@ on:
   # Allows other workflows to trigger the build job
   # Used by the photo processing workflow to rebuild after adding photos
   repository_dispatch:
-    types: [trigger-hugo-build]
+    types: [trigger-hugo-autopilot]
 
 jobs:
   # Single job that routes to the appropriate workflow based on the trigger
@@ -129,7 +129,7 @@ jobs:
 
 ### External Triggers
 
-The hugo-autopilot.yml file you created above is configured to listen for the `repository_dispatch` event with type `trigger-hugo-build`. You can use this to trigger your Hugo site build from other workflows:
+The hugo-autopilot.yml file you created above is configured to listen for the `repository_dispatch` event with type `trigger-hugo-autopilot`. You can use this to trigger your Hugo site build from other workflows:
 
 <details>
 <summary>Click to expand external trigger example</summary>
@@ -142,7 +142,7 @@ The hugo-autopilot.yml file you created above is configured to listen for the `r
     # This targets your own repository
     token: ${{ secrets.GITHUB_TOKEN }}
     # This matches the event type in your hugo-autopilot.yml file
-    event-type: trigger-hugo-build
+    event-type: trigger-hugo-autopilot
 ```
 </details>
 
