@@ -13,27 +13,16 @@ A reuseable Workflow to automate the building & updating of a Hugo site with a s
 
 Hugo Autopilot combines three powerful workflows into a single, easy-to-use solution that you can reference from your Hugo site with just one file. The system uses a smart router mechanism with state management to determine which workflows to run based on the trigger event:
 
-```mermaid
-flowchart LR
-    %% Event triggers
-    PR[PR Event] --> PRMerger[PR Merger]
-    Schedule[Schedule Event] --> Updater[Hugo Updater]
-    Manual[Manual Trigger] --> Updater & Builder
-    Push[Push Event] --> Builder[Hugo Builder]
-    Dispatch[Repository Dispatch] --> Builder
-    
-    %% Hugo Updater workflow
-    Updater --> UpdateCheck{Update Available?}
-    UpdateCheck -->|Yes| CreatePR[Create PR]
-    UpdateCheck -->|No| NoAction[No Action]
-    CreatePR --> TriggerBuild[Trigger Build]
-    
-    %% Hugo Builder workflow
-    Builder --> SafetyCheck{Update Pending?}
-    SafetyCheck -->|Yes| Skip[Skip Build]
-    SafetyCheck -->|No| Build[Build & Deploy]
-    TriggerBuild --> Build
-```
+| Event Type | Hugo Builder | Hugo Updater | PR Merger |
+|------------|:----------------------------------:|:-----------------------------------:|:------------------------------:|
+| | **Rebuilds site cache-free**<br>Checks for pending updates before building | **Updates to newest Hugo version**<br>Creates PR when update found | **Auto-merges Dependabot PRs** |
+| Content Change<br>(`push` to main) | ✅ | ❌ | ❌ |
+| Weekly Check<br>(`schedule` weekly) | ❌ | ✅ | ❌ |
+| After Hugo Update<br>(`repository_dispatch`) | ✅ | ❌ | ❌ |
+| Dependency Update<br>(`pull_request`) | ❌ | ❌ | ✅ |
+| Manual Trigger<br>(`workflow_dispatch`) | ✅ | ✅ | ✅ |
+
+**Safety Mechanism:** When Hugo Updater finds an update, it creates a PR and sets a pending state. Hugo Builder checks this state before building - if an update is pending, it skips the build to prevent race conditions. After the PR is merged, a new build is automatically triggered with the updated Hugo version.
 
 **Workflow Components:**
 - **Hugo Builder:** Rebuilds site cache-free (Triggered by: content changes, manual triggers, after Hugo updates)
