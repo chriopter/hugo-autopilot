@@ -20,6 +20,36 @@ Hugo Autopilot combines three powerful workflows into a single, easy-to-use solu
 - Auto-merge Dependabot PRs for GitHub Actions dependencies with **PR Merger**
 - Respond to manual triggers and repository dispatch events
 
+## Workflow Triggers
+
+Hugo Autopilot uses a router mechanism to determine which workflows to run based on the trigger event. Here's how it works:
+
+| Event Type | Hugo Builder | Hugo Updater | PR Merger |
+|------------|:------------:|:------------:|:---------:|
+| `push` to main | ✅ | ❌ | ❌ |
+| `schedule` (weekly) | ❌ | ✅ | ❌ |
+| `pull_request` | ❌ | ❌ | ✅ |
+| `repository_dispatch` | ✅ | ❌ | ❌ |
+| `workflow_dispatch` (manual) | ✅ | ✅ | ✅ |
+
+### Hugo Builder
+- **When it runs**: On pushes to the main branch, repository dispatch events, and manual triggers
+- **What it does**: Builds your Hugo site and deploys it to GitHub Pages
+- **Customization**: Configure Git info, Hugo version, and other build parameters
+
+### Hugo Updater
+- **When it runs**: Weekly on schedule (Monday at 6 AM) and manual triggers only
+- **What it does**: 
+  1. Checks for new Hugo versions by comparing your `.hugoversion` file with the latest release
+  2. Creates a pull request to update your Hugo version if an update is available
+  3. Automatically merges the PR after creation
+- **Note**: This workflow does NOT run on normal commits - it only runs on schedule or when manually triggered to avoid creating too many PRs
+
+### PR Merger
+- **When it runs**: When pull requests are opened, particularly from Dependabot
+- **What it does**: Automatically merges dependency update PRs that meet certain criteria
+- **Customization**: Configure merge method and PR filtering
+
 Here's a real-world example from [christopher-eller.de](https://github.com/chriopter/christopher-eller.de):
 
 ### Installation
