@@ -24,7 +24,10 @@ All these features are accessed through a single router workflow that you can re
 ### Installation
 
 1. [ ] Create a `.hugoversion` file in your repository root with your Hugo version (e.g., `0.123.8`)
-2. [ ] Copy the [dependabot.yml template](https://github.com/chriopter/hugo-autopilot/blob/main/templates/dependabot.yml) to your repository at `.github/dependabot.yml`:
+2. [ ] Copy the dependabot.yml template to your repository at `.github/dependabot.yml`:
+
+<details>
+<summary>Click to expand dependabot.yml template</summary>
 
 ```yaml
 # Template: dependabot.yml
@@ -66,6 +69,7 @@ updates:
   #     prefix: "build"
   #     include: "scope"
 ```
+</details>
 
 3. [ ] Create the following workflow file:
 
