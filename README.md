@@ -15,17 +15,12 @@ Hugo Autopilot combines three workflows (Builder, Updater, PR Merger) into a sin
 
 | Event Type | Hugo Builder | Hugo Updater | PR Merger |
 |------------|:----------------------------------:|:-----------------------------------:|:------------------------------:|
-| | **Rebuilds site cache-free**<br>Checks for pending updates before building | **Updates to newest Hugo version**<br>Creates PR when update found | **Auto-merges Dependabot PRs** |
+| | **Rebuilds site cache-free**<br>Triggered by: content changes, weekly checks, manual triggers, after Hugo updates | **Updates to newest Hugo version**<br>Triggered by: weekly schedule, manual triggers. When an update is found, it creates a PR with a specific title prefix, auto-merges it, and triggers a new build. | **Auto-merges Dependabot PRs**<br>Triggered by: dependency updates, manual triggers |
 | Content Change<br>(`push` to main) | ✅ | ❌ | ❌ |
 | Weekly Check<br>(`schedule` weekly) | ✅ | ✅ | ❌ |
 | After Hugo Update<br>(`repository_dispatch`) | ✅ | ❌ | ❌ |
 | Dependency Update<br>(`pull_request`) | ❌ | ❌ | ✅ |
 | Manual Trigger<br>(`workflow_dispatch`) | ✅ | ✅ | ✅ |
-
-**Workflow Components:**
-- **Hugo Builder:** Rebuilds site cache-free (Triggered by: content changes, weekly checks, manual triggers, after Hugo updates)
-- **Hugo Updater:** Updates to newest Hugo version (Triggered by: weekly schedule, manual triggers). When an update is found, it creates a PR with a specific title prefix, auto-merges it, and triggers a new build.
-- **PR Merger:** Auto-merges Dependabot PRs (Triggered by: dependency updates, manual triggers)
 
 Note: Dependency updates are also used by this repo to always use newest sub-workflows like peaceiris/actions-hugo.
 
