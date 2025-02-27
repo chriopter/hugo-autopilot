@@ -11,18 +11,9 @@ Automated CI/CD workflows for Hugo sites with automatic updates and dependency m
 
 Hugo Autopilot provides a set of reusable GitHub Actions workflows that automate the build, deployment, and maintenance of Hugo sites. These workflows can be referenced from your Hugo site repositories, allowing you to maintain your CI/CD configuration in a single place.
 
-## Features & Usage Example
+## Features & Workflow Triggers
 
-Hugo Autopilot combines three powerful workflows into a single, easy-to-use solution that you can reference from your Hugo site with just one file:
-
-- Build and deploy to GitHub Pages when you push to main with **Hugo Builder**
-- Check for Hugo updates weekly and create auto-merged PRs with **Hugo Updater**
-- Auto-merge Dependabot PRs for GitHub Actions dependencies with **PR Merger**
-- Respond to manual triggers and repository dispatch events
-
-## Workflow Triggers
-
-Hugo Autopilot uses a router mechanism to determine which workflows to run based on the trigger event. Here's how it works:
+Hugo Autopilot combines three powerful workflows into a single, easy-to-use solution that you can reference from your Hugo site with just one file. The system uses a router mechanism to determine which workflows to run based on the trigger event:
 
 | Event Type | Hugo Builder | Hugo Updater | PR Merger |
 |------------|:------------:|:------------:|:---------:|
