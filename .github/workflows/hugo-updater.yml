@@ -18,10 +18,18 @@ on:
         required: false
         type: string
         default: 'Update Hugo:'
+      update_state_file:
+        description: 'Path to file for tracking update state'
+        required: false
+        type: string
+        default: '.hugo_update_state'
     outputs:
       pr_created:
         description: 'Whether a PR was created for a Hugo update'
         value: ${{ jobs.update.outputs.pr_created }}
+      update_needed:
+        description: 'Whether a Hugo update was needed'
+        value: ${{ jobs.update.outputs.update_needed }}
 
 permissions:
   contents: write
@@ -32,6 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       pr_created: ${{ steps.set-outputs.outputs.pr_created }}
+      update_needed: ${{ steps.set-outputs.outputs.update_needed }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -95,19 +104,38 @@ jobs:
         run: |
           # Default to false
           echo "pr_created=false" >> $GITHUB_OUTPUT
+          echo "update_needed=false" >> $GITHUB_OUTPUT
           
           # Check if PR was created
           if [ "${{ steps.check.outputs.NEEDS_UPDATE }}" == "true" ] && [ -n "${{ steps.create-pr.outputs.pull-request-number }}" ]; then
             echo "pr_created=true" >> $GITHUB_OUTPUT
+            echo "update_needed=true" >> $GITHUB_OUTPUT
             echo "✅ Pull request #${{ steps.create-pr.outputs.pull-request-number }} created successfully"
             echo "URL: ${{ steps.create-pr.outputs.pull-request-url }}"
           elif [ "${{ steps.check.outputs.NEEDS_UPDATE }}" == "true" ]; then
+            echo "update_needed=true" >> $GITHUB_OUTPUT
             echo "❌ Failed to create pull request"
             echo "This could be due to no changes being detected or an error in the PR creation process"
             exit 1
           else
             echo "No Hugo update needed"
           fi
+      
+      - name: Create update state file
+        if: steps.check.outputs.NEEDS_UPDATE == 'true' && steps.create-pr.outputs.pull-request-number != ''
+        run: |
+          echo "update_pending=true" > ${{ inputs.update_state_file }}
+          echo "pr_number=${{ steps.create-pr.outputs.pull-request-number }}" >> ${{ inputs.update_state_file }}
+          echo "created_at=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> ${{ inputs.update_state_file }}
+          
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add ${{ inputs.update_state_file }}
+          git commit -m "Set Hugo update pending state [skip ci]" || echo "No changes to commit"
+          git push
+          
+          echo "Created update state file:"
+          cat ${{ inputs.update_state_file }}
 
       - name: Delete branch after merge
         if: steps.create-pr.outputs.pull-request-number
@@ -144,6 +172,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           event-type: hugo-autopilot-build
           repository: ${{ github.repository }}
+          client-payload: '{"clear_pending": true}'
           
       # Debug information after triggering Hugo Builder
       - name: Debug Dispatch Result
