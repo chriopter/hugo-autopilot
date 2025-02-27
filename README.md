@@ -107,7 +107,7 @@ on:
 jobs:
   # Single job that routes to the appropriate workflow based on the trigger
   autopilot:
-    uses: chriopter/hugo-autopilot/.github/workflows/hugo-autopilot-router.yml@main
+    uses: chriopter/hugo-autopilot/.github/workflows/hugo-autopilot.yml@main
     with:
       # Path to your Hugo version file
       hugo_version_file: '.hugoversion'
@@ -119,7 +119,7 @@ jobs:
 
 This single workflow file handles all Hugo CI/CD tasks:
 - Building and deploying your site on push to main
-- Updating Hugo weekly and creating PRs
+- Updating Hugo weekly with automerged PRs
 - Auto-merging Dependabot PRs
 - Responding to manual triggers and repository dispatch events
 

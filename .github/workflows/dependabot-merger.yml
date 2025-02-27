@@ -1,0 +1,36 @@
+name: Dependabot Auto-merge
+on:
+  workflow_call:
+    inputs:
+      merge_method:
+        description: 'Merge method to use (merge, squash, rebase)'
+        required: false
+        type: string
+        default: 'squash'
+      commit_message:
+        description: 'Commit message template'
+        required: false
+        type: string
+        default: 'pull-request-title'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  dependabot-automerge:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: "${{ github.token }}"
+
+      - name: Enable auto-merge for Dependabot PRs
+        if: steps.metadata.outputs.update-type != 'version-update:semver-major'
+        run: |
+          gh pr merge --auto --${{ inputs.merge_method }} --${{ inputs.commit_message }} "${{ github.event.pull_request.html_url }}"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
