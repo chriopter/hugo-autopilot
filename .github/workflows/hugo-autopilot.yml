@@ -1,0 +1,82 @@
+name: Hugo Autopilot Router
+
+on:
+  workflow_call:
+    inputs:
+      hugo_version_file:
+        description: 'Path to file containing Hugo version'
+        required: false
+        type: string
+        default: '.hugoversion'
+      enable_git_info:
+        description: 'Enable Git info in Hugo build'
+        required: false
+        type: boolean
+        default: true
+      merge_method:
+        description: 'Merge method to use for PRs'
+        required: false
+        type: string
+        default: 'squash'
+
+jobs:
+  # Determine which jobs to run based on the event type
+  router:
+    runs-on: ubuntu-latest
+    outputs:
+      run_build: ${{ steps.route.outputs.run_build }}
+      run_update: ${{ steps.route.outputs.run_update }}
+      run_automerge: ${{ steps.route.outputs.run_automerge }}
+    steps:
+      - name: Determine jobs to run
+        id: route
+        run: |
+          # Default to not running any jobs
+          echo "run_build=false" >> $GITHUB_OUTPUT
+          echo "run_update=false" >> $GITHUB_OUTPUT
+          echo "run_automerge=false" >> $GITHUB_OUTPUT
+          
+          # Set flags based on event type
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            # Manual trigger runs all jobs
+            echo "run_build=true" >> $GITHUB_OUTPUT
+            echo "run_update=true" >> $GITHUB_OUTPUT
+            echo "run_automerge=true" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" == "schedule" ]]; then
+            # Schedule only runs update job
+            echo "run_update=true" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            # Pull request only runs automerge job
+            echo "run_automerge=true" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" == "repository_dispatch" ]]; then
+            # Repository dispatch only runs build job
+            echo "run_build=true" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" == "push" ]]; then
+            # Run build job for all pushes
+            echo "run_build=true" >> $GITHUB_OUTPUT
+          fi
+
+  # Build and deploy Hugo site
+  build:
+    needs: router
+    if: needs.router.outputs.run_build == 'true'
+    uses: chriopter/hugo-autopilot/.github/workflows/hugo-builder.yml@main
+    with:
+      hugo_version_file: ${{ inputs.hugo_version_file }}
+      enable_git_info: ${{ inputs.enable_git_info }}
+
+  # Update Hugo version
+  update:
+    needs: router
+    if: needs.router.outputs.run_update == 'true'
+    uses: chriopter/hugo-autopilot/.github/workflows/hugo-updater.yml@main
+    with:
+      hugo_version_file: ${{ inputs.hugo_version_file }}
+
+  # Auto-merge PRs
+  automerge:
+    needs: router
+    if: needs.router.outputs.run_automerge == 'true'
+    uses: chriopter/hugo-autopilot/.github/workflows/pr-merger.yml@main
+    with:
+      merge_method: ${{ inputs.merge_method }}
