@@ -7,6 +7,6 @@ permissions:
 
 jobs:
   dependabot-automerge:
-    uses: ../.github/workflows/dependabot-merger.yml@main
+    uses: chriopter/hugo-autopilot/.github/workflows/dependabot-merger.yml@main
     with:
       merge_method: 'squash'
