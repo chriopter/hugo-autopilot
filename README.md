@@ -13,80 +13,6 @@ A reuseable Workflow to automate the building & updating of a Hugo site with a s
 
 Hugo Autopilot combines three powerful workflows into a single, easy-to-use solution that you can reference from your Hugo site with just one file. The system uses a router mechanism to determine which workflows to run based on the trigger event:
 
-```
-                                  ┌─────────────────────┐
-                                  │   Workflow Trigger  │
-                                  └──────────┬──────────┘
-                                             │
-                                             ▼
-                                  ┌─────────────────────┐
-                                  │     Router Job      │
-                                  └──────────┬──────────┘
-                                             │
-                 ┌─────────────────┬─────────┴────────┬─────────────────┐
-                 │                 │                  │                 │
-                 ▼                 ▼                  ▼                 ▼
-        ┌─────────────────┐ ┌─────────────┐ ┌──────────────────┐ ┌─────────────┐
-        │ run_build=true  │ │run_update=  │ │run_automerge=true│ │    Other    │
-        │                 │ │   true      │ │                  │ │   Events    │
-        └────────┬────────┘ └──────┬──────┘ └────────┬─────────┘ └─────────────┘
-                 │                 │                 │
-                 │                 ▼                 │
-                 │         ┌─────────────┐          │
-                 │         │  Update Job │          │
-                 │         └──────┬──────┘          │
-                 │                │                 │
-                 │                ▼                 │
-                 │        ┌──────────────┐         │
-                 │        │ Check Hugo   │         │
-                 │        │   Version    │         │
-                 │        └──────┬───────┘         │
-                 │               │                 │
-                 │               ▼                 │
-                 │        ┌──────────────┐         │
-                 │        │New Version?  │         │
-                 │        └──────┬───────┘         │
-                 │               │                 │
-                 │     ┌─────────┴─────────┐       │
-                 │     │                   │       │
-                 │     ▼                   ▼       │
-                 │  ┌──────┐          ┌────────┐  │
-                 │  │ No   │          │  Yes   │  │
-                 │  └──┬───┘          └───┬────┘  │
-                 │     │                  │       │
-                 │     │                  ▼       │
-                 │     │           ┌─────────────┐│
-                 │     │           │Create & Merge││
-                 │     │           │     PR      ││
-                 │     │           └──────┬──────┘│
-                 │     │                  │       │
-                 │     │                  ▼       │
-                 │     │           ┌─────────────┐│
-                 │     │           │ Repository  ││
-                 │     │           │  Dispatch   ││
-                 │     │           └──────┬──────┘│
-                 │     │                  │       │
-                 │     │                  ▼       │
-                 │     │           ┌─────────────┐│
-                 │     │           │New Workflow ││
-                 │     │           │    Run      ││
-                 │     │           └──────┬──────┘│
-                 │     │                  │       │
-                 │     │                  ▼       │
-                 │     │           ┌─────────────┐│
-                 │     │           │ Fresh Build ││
-                 │     │           │with New Hugo││
-                 │     │           └─────────────┘│
-                 │     │                          │
-                 ▼     ▼                          ▼
-          ┌────────────────────┐        ┌──────────────────┐
-          │    Build Job       │        │  Automerge Job   │
-          │(Only if no PR was  │        │                  │
-          │created or update   │        │                  │
-          │    was skipped)    │        │                  │
-          └────────────────────┘        └──────────────────┘
-```
-
 | Event Type | Hugo Builder | Hugo Updater | PR Merger |
 |------------|:----------------------------------:|:-----------------------------------:|:------------------------------:|
 | | Re-Builds Site Cache-Free | Updates to newest Hugoversion | Accepts all Dependabot PRs |
@@ -98,6 +24,92 @@ Hugo Autopilot combines three powerful workflows into a single, easy-to-use solu
 | After Hugo Update<br>(PR merge) | ✅ | ❌ | ❌ |
 
 Note: Dependency Updates are also used by this repo to always use newest sub-workflows like peaceiris/actions-hugo.
+
+<details>
+<summary>Click to expand workflow flowchart</summary>
+
+```
+                                  ┌─────────────────────┐
+                                  │   Workflow Trigger  │
+                                  └──────────┬──────────┘
+                                             │
+                                             │
+                                             ▼
+                                  ┌───────────────────────────┐
+                                  │     Router Job            │
+                                  └─┬───────┬───────┬───────┬─┘
+                                    │       │       │       │
+                                    │       │       │       │
+                                    ▼       ▼       ▼       ▼
+        ┌─────────────────┐ ┌─────────────────┐ ┌──────────────────┐ ┌─────────────┐
+        │ run_build=true  │ │run_update=true  │ │run_automerge=true│ │    Other    │
+        │                 │ │                 │ │                  │ │   Events    │
+        └────────┬────────┘ └───────┬─────────┘ └────────┬─────────┘ └─────────────┘
+                 │                  │                    │
+                 │                  │                    │
+                 │                  ▼                    │
+                 │          ┌─────────────┐              │
+                 │          │  Update Job │              │
+                 │          └──────┬──────┘              │
+                 │                 │                     │
+                 │                 │                     │
+                 │                 ▼                     │
+                 │          ┌──────────────┐             │
+                 │          │ Check Hugo   │             │
+                 │          │   Version    │             │
+                 │          └──────┬───────┘             │
+                 │                 │                     │
+                 │                 │                     │
+                 │                 ▼                     │
+                 │          ┌──────────────┐             │
+                 │          │New Version?  │             │
+                 │          └──────┬───────┘             │
+                 │                 │                     │
+                 │       ┌─────────┴─────────┐           │
+                 │       │                   │           │
+                 │       ▼                   ▼           │
+                 │    ┌──────┐          ┌────────┐      │
+                 │    │ No   │          │  Yes   │      │
+                 │    └──┬───┘          └───┬────┘      │
+                 │       │                  │           │
+                 │       │                  │           │
+                 │       │                  ▼           │
+                 │       │            ┌─────────────┐   │
+                 │       │            │Create & Merge│   │
+                 │       │            │     PR      │   │
+                 │       │            └──────┬──────┘   │
+                 │       │                   │          │
+                 │       │                   │          │
+                 │       │                   ▼          │
+                 │       │            ┌─────────────┐   │
+                 │       │            │ Repository  │   │
+                 │       │            │  Dispatch   │   │
+                 │       │            └──────┬──────┘   │
+                 │       │                   │          │
+                 │       │                   │          │
+                 │       │                   ▼          │
+                 │       │            ┌─────────────┐   │
+                 │       │            │New Workflow │   │
+                 │       │            │    Run      │   │
+                 │       │            └──────┬──────┘   │
+                 │       │                   │          │
+                 │       │                   │          │
+                 │       │                   ▼          │
+                 │       │            ┌─────────────┐   │
+                 │       │            │ Fresh Build │   │
+                 │       │            │with New Hugo│   │
+                 │       │            └─────────────┘   │
+                 │       │                              │
+                 │       │                              │
+                 ▼       ▼                              ▼
+          ┌────────────────────┐            ┌──────────────────┐
+          │    Build Job       │            │  Automerge Job   │
+          │(Only if no PR was  │            │                  │
+          │created or update   │            │                  │
+          │    was skipped)    │            │                  │
+          └────────────────────┘            └──────────────────┘
+```
+</details>
 
 Here's a real-world example from [christopher-eller.de](https://github.com/chriopter/christopher-eller.de):
 
