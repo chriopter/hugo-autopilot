@@ -129,13 +129,13 @@ jobs:
 
 ### External Triggers
 
-To trigger the Hugo build from other workflows, use the repository_dispatch event:
+To trigger Hugo Autopilot from other workflows, use the repository_dispatch event with the "trigger-hugo-build" event type. The router will automatically activate the Hugo Builder workflow:
 
 <details>
 <summary>Click to expand external trigger example</summary>
 
 ```yaml
-- name: Trigger Hugo build
+- name: Trigger Hugo Autopilot
   uses: peter-evans/repository-dispatch@v3
   with:
     event-type: trigger-hugo-build
