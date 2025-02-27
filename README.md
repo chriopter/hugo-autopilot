@@ -22,13 +22,6 @@ Hugo Autopilot combines three powerful workflows into a single, easy-to-use solu
 | Dependency Update<br>(`pull_request`) | ❌ | ❌ | ✅ |
 | Manual Trigger<br>(`workflow_dispatch`) | ✅ | ✅ | ✅ |
 
-**Simplified Workflow:**
-- All events directly trigger their respective workflows without complex dependencies
-- Weekly checks run both the Hugo Updater and Hugo Builder in parallel
-- When Hugo Updater finds an update, it creates and auto-merges a PR
-- After the PR is merged, it triggers another build with the updated Hugo version
-- This approach prioritizes simplicity and ensures the site is always rebuilt when needed
-
 **Workflow Components:**
 - **Hugo Builder:** Rebuilds site cache-free (Triggered by: content changes, weekly checks, manual triggers, after Hugo updates)
 - **Hugo Updater:** Updates to newest Hugo version (Triggered by: weekly schedule, manual triggers). When an update is found, it creates a PR with a specific title prefix, auto-merges it, and triggers a new build.
