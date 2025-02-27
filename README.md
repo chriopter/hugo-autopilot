@@ -16,11 +16,11 @@ Hugo Autopilot combines three powerful workflows into a single, easy-to-use solu
 | Event Type | Hugo Builder | Hugo Updater | PR Merger |
 |------------|:----------------------------------:|:-----------------------------------:|:------------------------------:|
 | | Re-Builds Site Cache-Free | Updates to newest Hugoversion | Accepts all Dependabot PRs |
-| On Content Change (`push` to main) | ✅ | ❌ | ❌ |
-| On Weekly Check (`schedule` weekly) | ❌ | ✅ | ❌ |
-| On Dependency Update (`pull_request`) | ❌ | ❌ | ✅ |
-| On External Trigger (`repository_dispatch`) | ✅ | ❌ | ❌ |
-| On Manual Trigger (`workflow_dispatch`) | ✅ | ✅ | ✅ |
+| On Content Change<br>(`push` to main) | ✅ | ❌ | ❌ |
+| On Weekly Check<br>(`schedule` weekly) | ❌ | ✅ | ❌ |
+| On Dependency Update<br>(`pull_request`) | ❌ | ❌ | ✅ |
+| On External Trigger<br>(`repository_dispatch`) | ✅ | ❌ | ❌ |
+| On Manual Trigger<br>(`workflow_dispatch`) | ✅ | ✅ | ✅ |
 
 Note: Dependency Updates are also used by this repo to always use newest sub-workflows like peaceiris/actions-hugo.
 
