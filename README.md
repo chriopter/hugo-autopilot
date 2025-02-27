@@ -18,7 +18,7 @@ Hugo Autopilot offers four reusable workflows:
 1. **Hugo Builder** (`hugo-builder.yml`) - Builds and deploys Hugo sites to GitHub Pages
    - Parameters: `base_branch`, `hugo_version_file`, `ignore_paths`, `enable_git_info`
 
-2. **Hugo Updater** (`hugo-updater.yml`) - Checks for Hugo updates and creates PRs
+2. **Hugo Updater** (`hugo-updater.yml`) - Checks for Hugo updates and creates PRs that are automerged to trigger rebuilds on newest Hugo-Version
    - Parameters: `hugo_version_file`, `update_branch`, `pr_title_prefix`
 
 3. **PR Merger** (`pr-merger.yml`) - Auto-merges Dependabot PRs
