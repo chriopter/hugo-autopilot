@@ -15,7 +15,7 @@ Hugo Autopilot provides a set of reusable GitHub Actions workflows that automate
 
 Hugo Autopilot combines three powerful workflows into a single, easy-to-use solution that you can reference from your Hugo site with just one file. The system uses a router mechanism to determine which workflows to run based on the trigger event:
 
-| Event Type | Hugo Builder<br>(Builds & Deploys) | Hugo Updater<br>(Auto-Updates Hugo) | PR Merger<br>(Auto-Merges PRs) |
+| Event Type | Hugo Builder<br><span style="font-weight:normal">(Builds & Deploys)</span> | Hugo Updater<br><span style="font-weight:normal">(Auto-Updates Hugo)</span> | PR Merger<br><span style="font-weight:normal">(Auto-Merges PRs)</span> |
 |------------|:----------------------------------:|:-----------------------------------:|:------------------------------:|
 | `push` to main | ✅ | ❌ | ❌ |
 | `schedule` (weekly) | ❌ | ✅ | ❌ |
@@ -23,7 +23,6 @@ Hugo Autopilot combines three powerful workflows into a single, easy-to-use solu
 | `repository_dispatch` | ✅ | ❌ | ❌ |
 | `workflow_dispatch` (manual) | ✅ | ✅ | ✅ |
 
-**Note**: The Hugo Updater workflow does NOT run on normal commits - it only runs on schedule or when manually triggered to avoid creating too many PRs.
 
 Here's a real-world example from [christopher-eller.de](https://github.com/chriopter/christopher-eller.de):
 
