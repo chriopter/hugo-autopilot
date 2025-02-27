@@ -23,7 +23,6 @@ All these features are accessed through a single router workflow that you can re
 
 ### Installation
 
-
 This single workflow file handles all Hugo CI/CD tasks:
 - Building and deploying your site on push to main
 - Updating Hugo weekly with automerged PRs
