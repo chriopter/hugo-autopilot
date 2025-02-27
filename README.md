@@ -13,7 +13,7 @@ Automated Build & Updating of Hugo site with a single workflow file!
 
 Hugo Autopilot combines three powerful workflows into a single, easy-to-use solution that you can reference from your Hugo site with just one file. The system uses a router mechanism to determine which workflows to run based on the trigger event:
 
-| Event Type | Hugo Builder | Hugo Updater | Dependabot PR Merger |
+| Event Type | Hugo Builder: Re-Builds Site Cache-Free | Hugo Updater: Rebuilds site with newest Hugoversion | PR Merger: Accepts all Dependabot PRs |
 |------------|:----------------------------------:|:-----------------------------------:|:------------------------------:|
 | On Content Change (`push` to main) | ✅ | ❌ | ❌ |
 | On Weekly Check (`schedule` weekly) | ❌ | ✅ | ❌ |
