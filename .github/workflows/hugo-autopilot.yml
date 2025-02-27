@@ -19,11 +19,12 @@ on:
         type: string
         default: 'squash'
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+# Sets permissions of the GITHUB_TOKEN to allow all required operations
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
+  pull-requests: write
 
 jobs:
   # Determine which jobs to run based on the event type
@@ -66,6 +67,10 @@ jobs:
   build:
     needs: router
     if: needs.router.outputs.run_build == 'true'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     uses: chriopter/hugo-autopilot/.github/workflows/hugo-builder.yml@main
     with:
       hugo_version_file: ${{ inputs.hugo_version_file }}
@@ -75,6 +80,9 @@ jobs:
   update:
     needs: router
     if: needs.router.outputs.run_update == 'true'
+    permissions:
+      contents: write
+      pull-requests: write
     uses: chriopter/hugo-autopilot/.github/workflows/hugo-updater.yml@main
     with:
       hugo_version_file: ${{ inputs.hugo_version_file }}
@@ -83,6 +91,9 @@ jobs:
   automerge:
     needs: router
     if: needs.router.outputs.run_automerge == 'true'
+    permissions:
+      contents: write
+      pull-requests: write
     uses: chriopter/hugo-autopilot/.github/workflows/dependabot-merger.yml@main
     with:
       merge_method: ${{ inputs.merge_method }}
