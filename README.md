@@ -8,10 +8,6 @@ Automated Build & Updating of Hugo site with a single workflow file!
 
 > **Note:** Primarly LLM Code - use with caution. Be aware of cascading triggering, potential breaking changes from automatic updates, resource consumption. Workflows have permissions to modify repository content.
 
-## Overview
-
-
-
 
 ## Features & Workflow Triggers
 
