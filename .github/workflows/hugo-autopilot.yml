@@ -134,7 +134,7 @@ jobs:
     if: |
       needs.router.outputs.run_build == 'true' && 
       (needs.check-state.outputs.update_pending != 'true') &&
-      (needs.router.outputs.run_update != 'true' || needs.update.result == 'skipped' || needs.update.outputs.pr_created != 'true')
+      (needs.router.outputs.run_update != 'true' || needs.update.result == 'skipped' || needs.update.outputs.pr_created != 'true' || needs.router.outputs.event_name == 'push' || needs.router.outputs.event_name == 'repository_dispatch')
     permissions:
       contents: read
       pages: write

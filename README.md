@@ -29,6 +29,7 @@ Hugo Autopilot combines three powerful workflows into a single, easy-to-use solu
 - Hugo Builder checks this state before building - if an update is pending, it skips the build to prevent race conditions
 - After the PR is merged, a new build is automatically triggered with the updated Hugo version
 - When no update is found during weekly checks, a build is still triggered to ensure the site stays up-to-date
+- Content changes (push events) always trigger a build as long as there are no pending updates
 
 **Workflow Components:**
 - **Hugo Builder:** Rebuilds site cache-free (Triggered by: content changes, manual triggers, after Hugo updates, and indirectly after weekly checks)
