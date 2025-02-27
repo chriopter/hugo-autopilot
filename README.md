@@ -17,16 +17,22 @@ Hugo Autopilot combines three powerful workflows into a single, easy-to-use solu
 |------------|:----------------------------------:|:-----------------------------------:|:------------------------------:|
 | | **Rebuilds site cache-free**<br>Checks for pending updates before building | **Updates to newest Hugo version**<br>Creates PR when update found | **Auto-merges Dependabot PRs** |
 | Content Change<br>(`push` to main) | ✅ | ❌ | ❌ |
-| Weekly Check<br>(`schedule` weekly) | ❌ | ✅ | ❌ |
+| Weekly Check<br>(`schedule` weekly) | ✅* | ✅ | ❌ |
 | After Hugo Update<br>(`repository_dispatch`) | ✅ | ❌ | ❌ |
 | Dependency Update<br>(`pull_request`) | ❌ | ❌ | ✅ |
 | Manual Trigger<br>(`workflow_dispatch`) | ✅ | ✅ | ✅ |
 
-**Safety Mechanism:** When Hugo Updater finds an update, it creates a PR and sets a pending state. Hugo Builder checks this state before building - if an update is pending, it skips the build to prevent race conditions. After the PR is merged, a new build is automatically triggered with the updated Hugo version.
+\* *Triggered indirectly via repository_dispatch after the Hugo Updater completes*
+
+**Safety Mechanism:** 
+- When Hugo Updater finds an update, it creates a PR and sets a pending state
+- Hugo Builder checks this state before building - if an update is pending, it skips the build to prevent race conditions
+- After the PR is merged, a new build is automatically triggered with the updated Hugo version
+- When no update is found during weekly checks, a build is still triggered to ensure the site stays up-to-date
 
 **Workflow Components:**
-- **Hugo Builder:** Rebuilds site cache-free (Triggered by: content changes, manual triggers, after Hugo updates)
-- **Hugo Updater:** Updates to newest Hugo version (Triggered by: weekly schedule, manual triggers). Uses PR-based state management to prevent race conditions - when an update is found, it creates a PR with a specific title prefix, which prevents builds until the PR is merged, ensuring the site is always built with the correct Hugo version.
+- **Hugo Builder:** Rebuilds site cache-free (Triggered by: content changes, manual triggers, after Hugo updates, and indirectly after weekly checks)
+- **Hugo Updater:** Updates to newest Hugo version (Triggered by: weekly schedule, manual triggers). Uses PR-based state management to prevent race conditions - when an update is found, it creates a PR with a specific title prefix, which prevents builds until the PR is merged, ensuring the site is always built with the correct Hugo version. When no update is found, it still triggers a build to keep the site up-to-date.
 - **PR Merger:** Auto-merges Dependabot PRs (Triggered by: dependency updates, manual triggers)
 
 Note: Dependency updates are also used by this repo to always use newest sub-workflows like peaceiris/actions-hugo.
