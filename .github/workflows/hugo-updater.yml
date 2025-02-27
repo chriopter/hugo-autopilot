@@ -90,6 +90,8 @@ jobs:
         id: create-pr
         uses: peter-evans/create-pull-request@v7
         with:
+          # Note: Currently hardcoded to 'main', but could be made configurable in the future
+          base: 'main'
           branch: ${{ inputs.update_branch }}
           delete-branch: true
           title: "${{ inputs.pr_title_prefix }} ${{ needs.check-for-updates.outputs.current_version }} → ${{ needs.check-for-updates.outputs.latest_version }}"
