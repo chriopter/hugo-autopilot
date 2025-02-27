@@ -129,15 +129,19 @@ jobs:
 
 ### External Triggers
 
-To trigger Hugo Autopilot from other workflows, use the repository_dispatch event with the "trigger-hugo-build" event type. The router will automatically activate the Hugo Builder workflow:
+The hugo-autopilot.yml file you created above is configured to listen for the `repository_dispatch` event with type `trigger-hugo-build`. You can use this to trigger your Hugo site build from other workflows:
 
 <details>
 <summary>Click to expand external trigger example</summary>
 
 ```yaml
-- name: Trigger Hugo Autopilot
+# Add this to your other workflow files when you need to trigger a site rebuild
+- name: Trigger Hugo site rebuild
   uses: peter-evans/repository-dispatch@v3
   with:
+    # This targets your own repository
+    token: ${{ secrets.GITHUB_TOKEN }}
+    # This matches the event type in your hugo-autopilot.yml file
     event-type: trigger-hugo-build
 ```
 </details>
