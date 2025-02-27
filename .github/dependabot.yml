@@ -15,4 +15,4 @@ updates:
     groups:
       github-actions:
         patterns:
-          - "*"  # This will group all GitHub Actions updates together
+          - "*"  # This will group all GitHub Actions updates togethe
