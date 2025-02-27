@@ -71,7 +71,9 @@ updates:
 ```
 </details>
 
-3. [ ] Create the following workflow file:
+3. [ ] Enable required GitHub settings: In repository settings, enable Actions with write permissions, PR creation, and auto-merge.
+
+4. [ ] Create the following workflow file:
 
 ### `.github/workflows/hugo-autopilot.yml`
 
