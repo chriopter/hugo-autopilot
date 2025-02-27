@@ -3,7 +3,7 @@
 [![Project status: active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![license](https://img.shields.io/github/license/chriopter/hugo-autopilot.svg)](https://github.com/chriopter/hugo-autopilot/blob/main/LICENSE)
 
-Automated Build & Updating of Hugo site with a single workflow file!
+A reuseable Workflow for Automated Build & Updating of Hugo site with a single workflow file!
 
 
 > **Note:** Primarly LLM Code - use with caution. Be aware of cascading triggering, potential breaking changes from automatic updates, resource consumption. Workflows have permissions to modify repository content.
