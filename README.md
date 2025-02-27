@@ -14,36 +14,25 @@ A reuseable Workflow to automate the building & updating of a Hugo site with a s
 Hugo Autopilot combines three powerful workflows into a single, easy-to-use solution that you can reference from your Hugo site with just one file. The system uses a smart router mechanism with state management to determine which workflows to run based on the trigger event:
 
 ```mermaid
-flowchart TD
-    Start[Workflow Trigger] --> Router[Router]
+flowchart LR
+    %% Event triggers
+    PR[PR Event] --> PRMerger[PR Merger]
+    Schedule[Schedule Event] --> Updater[Hugo Updater]
+    Manual[Manual Trigger] --> Updater & Builder
+    Push[Push Event] --> Builder[Hugo Builder]
+    Dispatch[Repository Dispatch] --> Builder
     
-    Router --> PR[PR Event]
-    Router --> Schedule[Schedule Event]
-    Router --> Manual[Manual Trigger]
-    Router --> Build[Build Event]
+    %% Hugo Updater workflow
+    Updater --> UpdateCheck{Update Available?}
+    UpdateCheck -->|Yes| CreatePR[Create PR]
+    UpdateCheck -->|No| NoAction[No Action]
+    CreatePR --> TriggerBuild[Trigger Build]
     
-    PR --> Automerge[Auto-Merge Dependencies]
-    Schedule --> UpdateCheck[Check & Update Hugo]
-    Manual --> UpdateCheck
-    
-    UpdateCheck --> NeedsUpdate{Update Available?}
-    NeedsUpdate -->|Yes| CreatePR[Create & Merge PR]
-    NeedsUpdate -->|No| BuildCheck[Check for Build]
-    
-    CreatePR --> TriggerBuild[Trigger New Build]
-    
-    BuildCheck --> CheckPending{Any Pending Updates?}
-    Build --> CheckPending
-    Manual --> CheckPending
-    
-    CheckPending -->|Yes| Skip[Skip Build]
-    CheckPending -->|No| BuildSite[Build & Deploy Site]
-    
-    TriggerBuild --> BuildSite
-    
-    Automerge --> End[End]
-    Skip --> End
-    BuildSite --> End
+    %% Hugo Builder workflow
+    Builder --> SafetyCheck{Update Pending?}
+    SafetyCheck -->|Yes| Skip[Skip Build]
+    SafetyCheck -->|No| Build[Build & Deploy]
+    TriggerBuild --> Build
 ```
 
 **Workflow Components:**
