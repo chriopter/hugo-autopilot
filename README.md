@@ -37,9 +37,9 @@ To set up Hugo Autopilot for your Hugo site:
 4. [ ] Ensure GitHub Pages is enabled for your repository
 5. [ ] Push changes to your repository
 
-## Usage
+## Usage Example
 
-To use Hugo Autopilot in your Hugo site repository, create a single workflow file:
+To use Hugo Autopilot in your Hugo site repository, create a single workflow file as shown in this real-world example from [christopher-eller.de](https://github.com/chriopter/christopher-eller.de):
 
 ### `.github/workflows/hugo-autopilot.yml`
 
@@ -47,32 +47,41 @@ To use Hugo Autopilot in your Hugo site repository, create a single workflow fil
 name: Hugo Autopilot
 
 on:
-  # Build triggers
+  # Triggers the build and deploy job when you push to main branch
+  # Ignores changes to import directory to avoid conflicts with photo processing
   push:
     branches: ["main"]
     paths-ignore:
-      - 'import/**'  # Ignore changes to import directory
+      - 'import/**'
   
-  # Update Hugo triggers
+  # Triggers the Hugo update job weekly to check for new Hugo versions
+  # Runs at 6:00 AM on Mondays to minimize disruption
   schedule:
     - cron: '0 6 * * 1'  # Weekly on Monday
   
-  # Auto-merge triggers
+  # Triggers the PR auto-merge job when Dependabot creates a PR
+  # Automatically handles dependency updates
   pull_request:
   
-  # Manual trigger for all jobs
+  # Allows manual triggering of all jobs from the GitHub Actions tab
+  # Useful for testing or forcing updates
   workflow_dispatch:
   
-  # Triggered by other workflows
+  # Allows other workflows to trigger the build job
+  # Used by the photo processing workflow to rebuild after adding photos
   repository_dispatch:
     types: [trigger-hugo-build]
 
 jobs:
+  # Single job that routes to the appropriate workflow based on the trigger
   autopilot:
     uses: chriopter/hugo-autopilot/.github/workflows/hugo-autopilot-router.yml@main
     with:
+      # Path to your Hugo version file
       hugo_version_file: '.hugoversion'
+      # Enable Git info for Hugo (last modified dates, etc.)
       enable_git_info: true
+      # Method to use when merging PRs
       merge_method: 'squash'
 ```
 
@@ -81,10 +90,6 @@ This single workflow file handles all Hugo CI/CD tasks:
 - Updating Hugo weekly and creating PRs
 - Auto-merging Dependabot PRs
 - Responding to manual triggers and repository dispatch events
-
-## Example Implementation
-
-For a real-world example of this workflow in action, see [christopher-eller.de](https://github.com/chriopter/christopher-eller.de), which uses a single `hugo-autopilot.yml` file to handle all CI/CD tasks.
 
 ## Credits
 
