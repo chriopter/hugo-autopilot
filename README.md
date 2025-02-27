@@ -11,35 +11,21 @@ Automated CI/CD workflows for Hugo sites with automatic updates and dependency m
 
 Hugo Autopilot provides a set of reusable GitHub Actions workflows that automate the build, deployment, and maintenance of Hugo sites. These workflows can be referenced from your Hugo site repositories, allowing you to maintain your CI/CD configuration in a single place.
 
-## Features & Workflows
+## Features & Usage Example
 
-Hugo Autopilot offers three reusable workflows combined into a single router workflow:
+Hugo Autopilot combines three powerful workflows into a single, easy-to-use solution:
 
-1. **Hugo Builder** (`hugo-builder.yml`) - Builds and deploys Hugo sites to GitHub Pages
-   - Parameters: `base_branch`, `hugo_version_file`, `ignore_paths`, `enable_git_info`
+1. **Hugo Builder** - Builds and deploys Hugo sites to GitHub Pages
+2. **Hugo Updater** - Checks for Hugo updates and creates PRs
+3. **PR Merger** - Auto-merges Dependabot PRs
 
-2. **Hugo Updater** (`hugo-updater.yml`) - Checks for Hugo updates and creates PRs that are automerged to trigger rebuilds on newest Hugo-Version
-   - Parameters: `hugo_version_file`, `update_branch`, `pr_title_prefix`
+All these features are accessed through a single router workflow that you can reference from your Hugo site with just one file, as shown in this real-world example from [christopher-eller.de](https://github.com/chriopter/christopher-eller.de):
 
-3. **PR Merger** (`pr-merger.yml`) - Auto-merges Dependabot PRs
-   - Parameters: `merge_method`, `commit_message`
-
-4. **Router** (`hugo-autopilot-router.yml`) - Routes events to the appropriate workflow based on the trigger
-   - Combines all workflows into a single entry point
-
-## Installation
-
-To set up Hugo Autopilot for your Hugo site:
+### Installation
 
 1. [ ] Create a `.hugoversion` file in your repository root with your Hugo version (e.g., `0.123.8`)
 2. [ ] Copy the dependabot.yml template to your repository at `.github/dependabot.yml`
-3. [ ] Create a single workflow file at `.github/workflows/hugo-autopilot.yml`
-4. [ ] Ensure GitHub Pages is enabled for your repository
-5. [ ] Push changes to your repository
-
-## Usage Example
-
-To use Hugo Autopilot in your Hugo site repository, create a single workflow file as shown in this real-world example from [christopher-eller.de](https://github.com/chriopter/christopher-eller.de):
+3. [ ] Create the following workflow file:
 
 ### `.github/workflows/hugo-autopilot.yml`
 
