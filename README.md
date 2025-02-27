@@ -43,7 +43,7 @@ Hugo Autopilot combines three powerful workflows into a single, easy-to-use solu
 
 Here's a real-world example from [christopher-eller.de](https://github.com/chriopter/christopher-eller.de):
 
-### Installation
+## Installation
 
 1. [ ] Create a `.hugoversion` file in your repository root with your Hugo version (e.g., `0.123.8`)
 2. [ ] Copy the dependabot.yml template to your repository at `.github/dependabot.yml`:
