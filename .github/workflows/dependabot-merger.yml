@@ -35,30 +35,9 @@ jobs:
           echo "PR number: ${{ github.event.pull_request.number }}"
           echo "Event name: ${{ github.event_name }}"
           echo "Actor: ${{ github.actor }}"
-        
+      
       - name: Enable auto-merge for Dependabot PRs
-        run: |
-          PR_NUMBER="${{ github.event.pull_request.number }}"
-          if [ -z "$PR_NUMBER" ]; then
-            echo "PR number not available in context, trying to get it from the event payload"
-            PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
-          fi
-          
-          if [ -z "$PR_NUMBER" ] || [ "$PR_NUMBER" = "null" ]; then
-            echo "Error: Could not determine PR number"
-            exit 1
-          fi
-          
-          echo "Using PR number: $PR_NUMBER"
-          
-          # Use the correct syntax for commit message
-          if [ "${{ inputs.commit_message }}" = "pull-request-title" ]; then
-            # Use PR title as commit message
-            PR_TITLE=$(gh pr view $PR_NUMBER --json title -q .title)
-            gh pr merge $PR_NUMBER --auto --${{ inputs.merge_method }} -t "$PR_TITLE"
-          else
-            # Use custom commit message
-            gh pr merge $PR_NUMBER --auto --${{ inputs.merge_method }} -t "${{ inputs.commit_message }}"
-          fi
+        run: gh pr merge --auto --${{ inputs.merge_method }} "$PR_URL"
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GH_TOKEN: ${{ github.token }}
