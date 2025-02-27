@@ -20,7 +20,7 @@ Hugo Autopilot combines three workflows (Builder, Updater, PR Merger) into a sin
 | Content Change<br>(`push` to main) | ✅ | ❌ | ❌ |
 | Weekly Check<br>(`schedule` weekly) | ✅* | ✅ | ❌ |
 | After Hugo Update<br>(`repository_dispatch`) | ✅ | ❌ | ❌ |
-| Dependency Update<br>(`pull_request`) | ❌ | ❌ | ✅ |
+| Dependency Update<br>(`pull_request from Dependabot`) | ❌ | ❌ | ✅ |
 | Manual Trigger<br>(`workflow_dispatch`) | ✅* | ✅ | ✅ |
 
 \* Hugo Updater Creates PR, Merges it and dispatches a Build 
