@@ -13,18 +13,12 @@ Hugo Autopilot provides a set of reusable GitHub Actions workflows that automate
 
 ## Features & Usage Example
 
-Hugo Autopilot combines three powerful workflows into a single, easy-to-use solution:
-
-1. **Hugo Builder** - Builds and deploys Hugo sites to GitHub Pages
-2. **Hugo Updater** - Checks for Hugo updates and creates PRs & Automerges to Rebuild site on newest version
-3. **PR Merger** - Auto-merges Dependabot PRs
-
-All these features are accessed through a single router workflow that you can reference from your Hugo site with just one file. This means you only need to add one workflow file to your repository to get all these capabilities:
+Hugo Autopilot combines three powerful workflows into a single, easy-to-use solution that you can reference from your Hugo site with just one file:
 
 With this single workflow file, your Hugo site will automatically:
-- Build and deploy to GitHub Pages when you push to main
-- Check for Hugo updates weekly and create auto-merged PRs
-- Auto-merge Dependabot PRs for GitHub Actions dependencies
+- Build and deploy to GitHub Pages when you push to main with **Hugo Builder**
+- Check for Hugo updates weekly and create auto-merged PRs with **Hugo Updater**
+- Auto-merge Dependabot PRs for GitHub Actions dependencies with **PR Merger**
 - Respond to manual triggers and repository dispatch events
 
 Here's a real-world example from [christopher-eller.de](https://github.com/chriopter/christopher-eller.de):
