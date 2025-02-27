@@ -103,3 +103,11 @@ jobs:
           sleep 5
           # Delete the branch
           git push origin --delete ${{ inputs.update_branch }} || echo "Branch may already be deleted"
+      
+      - name: Trigger rebuild with new Hugo version
+        if: steps.create-pr.outputs.pull-request-number
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ github.token }}
+          event-type: hugo-autopilot-build
+          client-payload: '{"reason": "Hugo version updated to ${{ steps.check.outputs.LATEST }}"}'
