@@ -28,15 +28,17 @@ flowchart TD
     
     UpdateCheck --> NeedsUpdate{Update Available?}
     NeedsUpdate -->|Yes| CreatePR[Create & Merge PR]
-    NeedsUpdate -->|No| CheckPending
+    NeedsUpdate -->|No| BuildCheck[Check for Build]
     
     CreatePR --> TriggerBuild[Trigger New Build]
     
-    Build --> CheckPending{Update Pending?}
+    BuildCheck --> CheckPending{Any Pending Updates?}
+    Build --> CheckPending
+    Manual --> CheckPending
+    
     CheckPending -->|Yes| Skip[Skip Build]
     CheckPending -->|No| BuildSite[Build & Deploy Site]
     
-    Manual --> CheckPending
     TriggerBuild --> BuildSite
     
     Automerge --> End[End]
