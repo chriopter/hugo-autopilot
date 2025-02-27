@@ -116,27 +116,8 @@ jobs:
             echo "No Hugo update needed"
           fi
       
-      # Trigger a build even when no update is needed
-      - name: Trigger Hugo Builder (No Update)
-        if: steps.check.outputs.NEEDS_UPDATE != 'true'
-        id: dispatch-no-update
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          event-type: hugo-autopilot-build
-          repository: ${{ github.repository }}
-          client-payload: '{"clear_pending": false}'
-      
-      # Debug information after triggering Hugo Builder (No Update)
-      - name: Debug Dispatch Result (No Update)
-        if: steps.check.outputs.NEEDS_UPDATE != 'true'
-        run: |
-          echo "::group::Dispatch Result (No Update)"
-          echo "Dispatch Step Status: ${{ steps.dispatch-no-update.outcome }}"
-          echo "Dispatch Step Conclusion: ${{ steps.dispatch-no-update.conclusion }}"
-          echo "::endgroup::"
-          
-          echo "::notice::🔄 Triggered hugo-autopilot-build event for ${{ github.repository }} (no update needed)"
+      # No need to trigger a build when no update is found
+      # The build job now runs in parallel with the update job
 
       - name: Delete branch after merge
         if: steps.create-pr.outputs.pull-request-number

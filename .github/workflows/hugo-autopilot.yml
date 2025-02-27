@@ -40,7 +40,6 @@ jobs:
       run_update: ${{ steps.route.outputs.run_update }}
       run_automerge: ${{ steps.route.outputs.run_automerge }}
       event_name: ${{ github.event_name }}
-      clear_pending: ${{ steps.route.outputs.clear_pending }}
     steps:
       - name: Determine jobs to run
         id: route
@@ -49,7 +48,6 @@ jobs:
           echo "run_build=false" >> $GITHUB_OUTPUT
           echo "run_update=false" >> $GITHUB_OUTPUT
           echo "run_automerge=false" >> $GITHUB_OUTPUT
-          echo "clear_pending=false" >> $GITHUB_OUTPUT
           
           # Set flags based on event type with priority handling
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
@@ -58,19 +56,15 @@ jobs:
             echo "run_update=true" >> $GITHUB_OUTPUT
             echo "run_automerge=true" >> $GITHUB_OUTPUT
           elif [[ "${{ github.event_name }}" == "schedule" ]]; then
-            # Schedule only runs update job
+            # Schedule runs both update and build jobs
             echo "run_update=true" >> $GITHUB_OUTPUT
+            echo "run_build=true" >> $GITHUB_OUTPUT
           elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
             # Pull request only runs automerge job
             echo "run_automerge=true" >> $GITHUB_OUTPUT
           elif [[ "${{ github.event_name }}" == "repository_dispatch" ]]; then
             # Repository dispatch only runs build job
             echo "run_build=true" >> $GITHUB_OUTPUT
-            
-            # Check if we should clear pending state
-            if [[ "${{ github.event.client_payload.clear_pending }}" == "true" ]]; then
-              echo "clear_pending=true" >> $GITHUB_OUTPUT
-            fi
           elif [[ "${{ github.event_name }}" == "push" ]]; then
             # Run build job for all pushes
             echo "run_build=true" >> $GITHUB_OUTPUT
@@ -78,7 +72,7 @@ jobs:
           
           echo "Event type: ${{ github.event_name }}"
 
-  # Auto-merge Dependabot PRs (highest priority)
+  # Auto-merge Dependabot PRs
   automerge:
     needs: router
     if: needs.router.outputs.run_automerge == 'true'
@@ -89,37 +83,10 @@ jobs:
     with:
       merge_method: ${{ inputs.merge_method }}
 
-  # Check for pending Hugo update PRs
-  check-state:
-    needs: router
-    if: needs.router.outputs.run_build == 'true' || needs.router.outputs.run_update == 'true'
-    runs-on: ubuntu-latest
-    outputs:
-      update_pending: ${{ steps.check-prs.outputs.update_pending }}
-    steps:
-      - name: Check for pending Hugo update PRs
-        id: check-prs
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR_TITLE_PREFIX: ${{ inputs.pr_title_prefix }}
-        run: |
-          # Search for open PRs with title containing the PR title prefix
-          PR_COUNT=$(gh pr list --search "$PR_TITLE_PREFIX in:title state:open" --json number | jq length)
-          
-          if [ "$PR_COUNT" -gt 0 ]; then
-            echo "update_pending=true" >> $GITHUB_OUTPUT
-            echo "Found $PR_COUNT pending Hugo update PRs"
-          else
-            echo "update_pending=false" >> $GITHUB_OUTPUT
-            echo "No pending Hugo update PRs found"
-          fi
-
   # Update Hugo version
   update:
-    needs: [router, check-state, automerge]
-    if: |
-      needs.router.outputs.run_update == 'true' && 
-      (needs.router.outputs.event_name == 'schedule' || needs.router.outputs.event_name == 'workflow_dispatch')
+    needs: router
+    if: needs.router.outputs.run_update == 'true'
     permissions:
       contents: write
       pull-requests: write
@@ -130,11 +97,8 @@ jobs:
 
   # Build and deploy Hugo site
   build:
-    needs: [router, check-state, update]
-    if: |
-      needs.router.outputs.run_build == 'true' && 
-      (needs.check-state.outputs.update_pending != 'true') &&
-      (needs.router.outputs.run_update != 'true' || needs.update.result == 'skipped' || needs.update.outputs.pr_created != 'true' || needs.router.outputs.event_name == 'push' || needs.router.outputs.event_name == 'repository_dispatch')
+    needs: router
+    if: needs.router.outputs.run_build == 'true'
     permissions:
       contents: read
       pages: write
