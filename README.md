@@ -4,7 +4,7 @@
 [![license](https://img.shields.io/github/license/chriopter/hugo-autopilot.svg)](https://github.com/chriopter/hugo-autopilot/blob/main/LICENSE)
 
 A reuseable Workflow to automate the building & updating of a Hugo site with a single workflow file!
-
+Used for example here [christopher-eller.de](https://github.com/chriopter/christopher-eller.de).
 
 > **Note:** Primarly LLM Code - use with caution. Be aware of cascading triggering, potential breaking changes from automatic updates (even major!), resource consumption. Workflows have permissions to modify repository content.
 
@@ -22,11 +22,9 @@ Hugo Autopilot combines three workflows (Builder, Updater, PR Merger) into a sin
 | Dependency Update<br>(`pull_request`) | ❌ | ❌ | ✅ |
 | Manual Trigger<br>(`workflow_dispatch`) | ✅* | ✅ | ✅ |
 
-* Hugo Updater Creates PR, Merges it and dispatches an Build 
+\* Hugo Updater Creates PR, Merges it and dispatches a Build 
 
-Note: Dependency updates are also used by this repo to always use newest sub-workflows like peaceiris/actions-hugo.
-
-Here's a real-world example from [christopher-eller.de](https://github.com/chriopter/christopher-eller.de):
+**Note:** Dependency updates are also used by this repo to always use newest sub-workflows like peaceiris/actions-hugo.
 
 ## Prepare Repo
 
