@@ -24,7 +24,49 @@ All these features are accessed through a single router workflow that you can re
 ### Installation
 
 1. [ ] Create a `.hugoversion` file in your repository root with your Hugo version (e.g., `0.123.8`)
-2. [ ] Copy the dependabot.yml template to your repository at `.github/dependabot.yml`
+2. [ ] Copy the [dependabot.yml template](https://github.com/chriopter/hugo-autopilot/blob/main/templates/dependabot.yml) to your repository at `.github/dependabot.yml`:
+
+```yaml
+# Template: dependabot.yml
+# Copy this file to your Hugo site repository at .github/dependabot.yml
+
+version: 2
+updates:
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # Limit to 5 open pull requests for version updates
+    open-pull-requests-limit: 5
+    # Add labels to pull requests
+    labels:
+      - "dependencies"
+      - "github-actions"
+    # Use custom commit message
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    # Group all updates together
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  # Uncomment if using npm in your Hugo site (e.g., for JavaScript processing)
+  # - package-ecosystem: "npm"
+  #   directory: "/"
+  #   schedule:
+  #     interval: "monthly"
+  #   open-pull-requests-limit: 5
+  #   labels:
+  #     - "dependencies"
+  #     - "npm"
+  #   commit-message:
+  #     prefix: "build"
+  #     include: "scope"
+```
+
 3. [ ] Create the following workflow file:
 
 ### `.github/workflows/hugo-autopilot.yml`
