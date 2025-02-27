@@ -15,21 +15,19 @@ Hugo Autopilot provides a set of reusable GitHub Actions workflows that automate
 
 Hugo Autopilot combines three powerful workflows into a single, easy-to-use solution that you can reference from your Hugo site with just one file. The system uses a router mechanism to determine which workflows to run based on the trigger event:
 
-| Event Type | Hugo Builder | Hugo Updater | PR Merger |
-|------------|:------------:|:------------:|:---------:|
-| `push` to main | ✅ | ❌ | ❌ |
-| `schedule` (weekly) | ❌ | ✅ | ❌ |
-| `pull_request` | ❌ | ❌ | ✅ |
-| `repository_dispatch` | ✅ | ❌ | ❌ |
-| `workflow_dispatch` (manual) | ✅ | ✅ | ✅ |
-
 ### Hugo Builder
-- **When it runs**: On pushes to the main branch, repository dispatch events, and manual triggers
+- **Triggered by**: 
+  - `push` to main branch ✅
+  - `repository_dispatch` events ✅
+  - `workflow_dispatch` (manual) ✅
 - **What it does**: Builds your Hugo site and deploys it to GitHub Pages
 - **Customization**: Configure Git info, Hugo version, and other build parameters
 
 ### Hugo Updater
-- **When it runs**: Weekly on schedule (Monday at 6 AM) and manual triggers only
+- **Triggered by**: 
+  - `schedule` (weekly on Monday at 6 AM) ✅
+  - `workflow_dispatch` (manual) ✅
+  - Normal commits/pushes ❌
 - **What it does**: 
   1. Checks for new Hugo versions by comparing your `.hugoversion` file with the latest release
   2. Creates a pull request to update your Hugo version if an update is available
@@ -37,7 +35,9 @@ Hugo Autopilot combines three powerful workflows into a single, easy-to-use solu
 - **Note**: This workflow does NOT run on normal commits - it only runs on schedule or when manually triggered to avoid creating too many PRs
 
 ### PR Merger
-- **When it runs**: When pull requests are opened, particularly from Dependabot
+- **Triggered by**: 
+  - `pull_request` events ✅
+  - `workflow_dispatch` (manual) ✅
 - **What it does**: Automatically merges dependency update PRs that meet certain criteria
 - **Customization**: Configure merge method and PR filtering
 
