@@ -85,14 +85,7 @@ updates:
      - Enable "Allow GitHub Actions to request the id-token write permission"
    - This ensures the workflow can trigger other workflows and handle cross-organization permissions
 
-4. **For cross-organization usage**:
-   - If you're using this workflow from a different GitHub organization/account than `chriopter`:
-     - The above permissions settings are especially important
-     - No additional tokens or secrets are needed
-     - Just ensure all the permissions are enabled as described above
-   - This allows the workflow to function properly across organization boundaries
-
-5. **Create the workflow file** at `.github/workflows/hugo-autopilot.yml` (see below)
+4. **Create the workflow file** at `.github/workflows/hugo-autopilot.yml` (see below)
 
 ## Workflow File
 
