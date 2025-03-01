@@ -19,9 +19,9 @@ Hugo Autopilot provides three independent reusable workflows that work together 
 Builds and deploys your Hugo site to GitHub Pages with cache-free builds and Git info support.
 
 **Triggers:**
-- **Content Change** (`push` to main branch)
-- **After Hugo Update** (via `repository_dispatch` event type `hugo-autopilot-build`)
-- **Manual Trigger** (via `workflow_dispatch`)
+- **Content Change** (`push` to main branch) - *Automatic trigger*
+- **After Hugo Update** (via `repository_dispatch` event type `hugo-autopilot-build`) - *Externally callable trigger*
+- **Manual Trigger** (via `workflow_dispatch`) - *Manual trigger from GitHub UI*
 
 **Actions:**
 - Checks out repository with submodules
@@ -35,8 +35,8 @@ Builds and deploys your Hugo site to GitHub Pages with cache-free builds and Git
 Checks for new Hugo versions, creates and auto-merges PRs, and triggers a rebuild.
 
 **Triggers:**
-- **Weekly Check** (`schedule` every Monday at 6:00 AM)
-- **Manual Trigger** (via `workflow_dispatch`)
+- **Weekly Check** (`schedule` every Monday at 6:00 AM) - *Automatic trigger*
+- **Manual Trigger** (via `workflow_dispatch`) - *Manual trigger from GitHub UI*
 
 **Actions:**
 - Checks current Hugo version against latest release
@@ -49,8 +49,8 @@ Checks for new Hugo versions, creates and auto-merges PRs, and triggers a rebuil
 Automatically merges Dependabot PRs for GitHub Actions dependencies.
 
 **Triggers:**
-- **Dependency Update** (`pull_request` from Dependabot)
-- **Manual Trigger** (via `workflow_dispatch`)
+- **Dependency Update** (`pull_request` from Dependabot) - *Automatic trigger*
+- **Manual Trigger** (via `workflow_dispatch`) - *Manual trigger from GitHub UI*
 
 **Actions:**
 - Verifies PR is from Dependabot
@@ -240,15 +240,22 @@ jobs:
 
 Hugo Autopilot automatically checks out Git submodules during the build process. If your Hugo site uses submodules (e.g., for themes), make sure you've committed and pushed all changes to both your theme repository and your main site repository.
 
-### External Triggers
+## External Triggers
 
-The hugo-autopilot-builder.yml file you created above is configured to listen for the `repository_dispatch` event with type `hugo-autopilot-build`. You can use this to trigger your Hugo site build from other workflows:
+### Callable Triggers
 
-<details>
-<summary>Click to expand external trigger example</summary>
+The only workflow that can be explicitly triggered from external sources is the **Hugo Builder** workflow. It listens for the `repository_dispatch` event with type `hugo-autopilot-build`.
+
+You can trigger a Hugo site build from:
+- Other workflows in your repository
+- External systems that can make API calls to GitHub
+- Custom scripts or automation tools
+
+### How to Call the Hugo Builder Workflow
+
+Add this to your other workflow files when you need to trigger a site rebuild:
 
 ```yaml
-# Add this to your other workflow files when you need to trigger a site rebuild
 - name: Trigger Hugo site rebuild
   uses: peter-evans/repository-dispatch@v3
   with:
@@ -257,7 +264,8 @@ The hugo-autopilot-builder.yml file you created above is configured to listen fo
     # This matches the event type in your hugo-autopilot-builder.yml file
     event-type: hugo-autopilot-build
 ```
-</details>
+
+Note: The Hugo Updater workflow automatically triggers the Hugo Builder workflow after updating the Hugo version, using this same mechanism.
 
 ## Credits
 
