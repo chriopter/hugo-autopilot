@@ -28,8 +28,7 @@ Three reusable workflows that automate your Hugo site maintenance:
 - **Purpose:** Auto-merges dependency updates  
 - **Triggers:** Dependabot PRs, manual UI trigger
 - **Actions:** Verify Dependabot PR, auto-merge
-
-> **Note:** Keeps sub-workflows like peaceiris/actions-hugo updated.
+- **Used here:** Keeps sub-workflows like peaceiris/actions-hugo in this repo updated.
 
 ## Prepare Repo
 
