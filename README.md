@@ -3,7 +3,7 @@
 [![Project status: active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![license](https://img.shields.io/github/license/chriopter/hugo-autopilot.svg)](https://github.com/chriopter/hugo-autopilot/blob/main/LICENSE)
 
-A reuseable Workflow to automate the building & updating of a Hugo site with a single workflow file!
+A set of reusable workflows to automate the building & updating of a Hugo site!
 
 Used for example here [christopher-eller.de](https://github.com/chriopter/christopher-eller.de).
 
@@ -14,13 +14,47 @@ Used for example here [christopher-eller.de](https://github.com/chriopter/christ
 
 Hugo Autopilot provides three independent reusable workflows that work together to automate your Hugo site maintenance:
 
-| Workflow | Description | Content Change<br>(`push`) | Weekly Check<br>(`schedule`) | After Update<br>(`repository_dispatch`) | Dependabot PR<br>(`pull_request`) | Manual<br>(`workflow_dispatch`) |
-|----------|-------------|:---------------------------:|:----------------------------:|:--------------------------------------:|:---------------------------------:|:-------------------------------:|
-| **Hugo Builder**<br>`hugo-autopilot-builder.yml` | Builds and deploys your Hugo site to GitHub Pages with cache-free builds and Git info support | ✅ | ❌ | ✅ | ❌ | ✅ |
-| **Hugo Updater**<br>`hugo-autopilot-updater.yml` | Checks for new Hugo versions, creates and auto-merges PRs, and triggers a rebuild | ❌ | ✅ | ❌ | ❌ | ✅ |
-| **Dependabot Merger**<br>`hugo-autopilot-dependabot-merger.yml` | Automatically merges Dependabot PRs for GitHub Actions dependencies | ❌ | ❌ | ❌ | ✅ | ✅ |
+### **Hugo Builder** (`hugo-autopilot-builder.yml`)
 
-**Note:** The Hugo Updater automatically triggers the Builder after creating and merging a PR via the repository_dispatch event.
+Builds and deploys your Hugo site to GitHub Pages with cache-free builds and Git info support.
+
+**Triggers:**
+- **Content Change** (`push` to main branch)
+- **After Hugo Update** (via `repository_dispatch` event type `hugo-autopilot-build`)
+- **Manual Trigger** (via `workflow_dispatch`)
+
+**Actions:**
+- Checks out repository with submodules
+- Reads Hugo version from `.hugoversion` file
+- Sets up GitHub Pages
+- Builds the site with specified Hugo version
+- Uploads and deploys to GitHub Pages
+
+### **Hugo Updater** (`hugo-autopilot-updater.yml`)
+
+Checks for new Hugo versions, creates and auto-merges PRs, and triggers a rebuild.
+
+**Triggers:**
+- **Weekly Check** (`schedule` every Monday at 6:00 AM)
+- **Manual Trigger** (via `workflow_dispatch`)
+
+**Actions:**
+- Checks current Hugo version against latest release
+- Creates a PR with version update if needed
+- Auto-merges the PR
+- Triggers the Builder workflow via repository_dispatch
+
+### **Dependabot Merger** (`hugo-autopilot-dependabot-merger.yml`)
+
+Automatically merges Dependabot PRs for GitHub Actions dependencies.
+
+**Triggers:**
+- **Dependency Update** (`pull_request` from Dependabot)
+- **Manual Trigger** (via `workflow_dispatch`)
+
+**Actions:**
+- Verifies PR is from Dependabot
+- Auto-merges the PR using specified merge method
 
 **Note:** Auto-Dependency updates are also used by this repo to always use newest sub-workflows like peaceiris/actions-hugo.
 
@@ -208,7 +242,7 @@ Hugo Autopilot automatically checks out Git submodules during the build process.
 
 ### External Triggers
 
-The hugo-autopilot.yml file you created above is configured to listen for the `repository_dispatch` event with type `hugo-autopilot-build`. You can use this to trigger your Hugo site build from other workflows:
+The hugo-autopilot-builder.yml file you created above is configured to listen for the `repository_dispatch` event with type `hugo-autopilot-build`. You can use this to trigger your Hugo site build from other workflows:
 
 <details>
 <summary>Click to expand external trigger example</summary>
@@ -220,7 +254,7 @@ The hugo-autopilot.yml file you created above is configured to listen for the `r
   with:
     # This targets your own repository
     token: ${{ secrets.GITHUB_TOKEN }}
-    # This matches the event type in your hugo-autopilot.yml file
+    # This matches the event type in your hugo-autopilot-builder.yml file
     event-type: hugo-autopilot-build
 ```
 </details>
