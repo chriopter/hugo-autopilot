@@ -30,6 +30,8 @@ Auto-merges dependency updates of github workflows. Used in this repo as well to
 **Actions:** Verify Dependabot PR, auto-merge
 
 
+## Setup Guide
+
 See the `example-user-repo` folder for reference files. To set up Hugo Autopilot in your repository:
 
 1. **Create a `.hugoversion` file** in your repository root with your Hugo version (e.g., `0.123.8`)
