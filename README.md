@@ -23,6 +23,7 @@ Three reusable workflows that automate your Hugo site maintenance:
 **Purpose:** Updates Hugo version and triggers rebuild  
 **Triggers:** Weekly schedule, manual UI trigger  
 **Actions:** Check for updates, create PR, auto-merge, trigger Builder workflow
+> **Note:** Automatically checks out Git submodules during the build process (updates themes etc.).
 
 ### 3. Dependabot Merger
 **Purpose:** Auto-merges dependency updates  
@@ -49,9 +50,7 @@ See the `example-user-repo` folder for reference files. To set up Hugo Autopilot
    - `hugo-autopilot-updater.yml` - Checks for Hugo updates
    - `hugo-autopilot-dependabot-merger.yml` - Auto-merges dependency PRs
 
-### Git Submodules Support
 
-Hugo Autopilot automatically checks out Git submodules during the build process. If your Hugo site uses submodules (e.g., for themes), make sure you've committed and pushed all changes to both your theme repository and your main site repository.
 
 ## External Triggers
 
@@ -78,7 +77,7 @@ Add this to your other workflow files when you need to trigger a site rebuild:
     event-type: hugo-autopilot-build
 ```
 
-Note: The Hugo Updater workflow automatically triggers the Hugo Builder workflow after updating the Hugo version, using this same mechanism.
+
 
 ## Credits
 
