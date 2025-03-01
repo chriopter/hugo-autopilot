@@ -34,20 +34,19 @@ Auto-merges dependency updates of github workflows. Used in this repo as well to
 
 See the `example-user-repo` folder for reference files. To set up Hugo Autopilot in your repository:
 
-1. **Create a `.hugoversion` file** in your repository root with your Hugo version (e.g., `0.123.8`)
+1. **Copy all required files** from the example repository:
+   - `.hugoversion` file in your repository root with your Hugo version (e.g., `0.123.8`)
+   - `.github/dependabot.yml` to enable automatic dependency updates
+   - `.github/workflows/` directory with all three workflow files:
+     - `hugo-autopilot-builder.yml` - Builds and deploys your site
+     - `hugo-autopilot-updater.yml` - Checks for Hugo updates
+     - `hugo-autopilot-dependabot-merger.yml` - Auto-merges dependency PRs
 
-2. **Add a dependabot.yml file** at `.github/dependabot.yml` to enable automatic dependency updates
-
-3. **Configure GitHub settings**:
+2. **Configure GitHub settings**:
    - Repository settings → Actions → General → Workflow permissions:
      - Enable "Read and write permissions"
      - Enable "Allow GitHub Actions to create and approve pull requests"
      - Enable "Allow GitHub Actions to request the id-token write permission"
-
-4. **Create workflow files** in `.github/workflows/`:
-   - `hugo-autopilot-builder.yml` - Builds and deploys your site
-   - `hugo-autopilot-updater.yml` - Checks for Hugo updates
-   - `hugo-autopilot-dependabot-merger.yml` - Auto-merges dependency PRs
 
 
 
