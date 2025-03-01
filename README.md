@@ -26,8 +26,8 @@ Updates Hugo version and triggers rebuild with newest version.
 
 ### Dependabot Merger
 Auto-merges dependency updates of github workflows. Used in this repo as well to update whats used in builder, updater.
-**Triggers:** Dependabot PRs, manual UI trigger  
-**Actions:** Verify Dependabot PR, auto-merge
+- **Triggers:** Dependabot PRs, manual UI trigger  
+- **Actions:** Verify Dependabot PR, auto-merge
 
 
 ## Setup Guide
