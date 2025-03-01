@@ -20,17 +20,15 @@ Builds and deploys your Hugo site to GitHub Pages. Automatically checks out Git 
 - **Actions:** Checkout repo, build with Hugo version from `.hugoversion`, deploy to Pages
 
 ### Hugo Updater
-- **Purpose:** Updates Hugo version and triggers rebuild  
+Updates Hugo version and triggers rebuild with newest version.
 - **Triggers:** Weekly schedule, manual UI trigger  
 - **Actions:** Check for updates, create PR, auto-merge, trigger Builder workflow
 
-### 3. Dependabot Merger
-**Purpose:** Auto-merges dependency updates  
+### Dependabot Merger
+Auto-merges dependency updates of github workflows. Used in this repo as well to update whats used in builder, updater.
 **Triggers:** Dependabot PRs, manual UI trigger  
 **Actions:** Verify Dependabot PR, auto-merge
-**Note:** Used in this repo itself to keep sub-workflows like peaceiris/actions-hugo updated.
 
-## Setup Guide
 
 See the `example-user-repo` folder for reference files. To set up Hugo Autopilot in your repository:
 
