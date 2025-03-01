@@ -1,28 +1,28 @@
-name: Hugo Builder
+name: Hugo Autopilot Builder
 
 on:
   workflow_call:
     inputs:
-      base_branch:
-        description: 'The branch to build from'
-        required: false
-        type: string
-        default: 'main'
       hugo_version_file:
         description: 'Path to file containing Hugo version'
         required: false
         type: string
         default: '.hugoversion'
-      ignore_paths:
-        description: 'Paths to ignore for triggering builds'
-        required: false
-        type: string
-        default: 'import/**,.github/**'
       enable_git_info:
         description: 'Enable Git info in Hugo build'
         required: false
         type: boolean
         default: true
+      base_branch:
+        description: 'The branch to build from'
+        required: false
+        type: string
+        default: 'main'
+      ignore_paths:
+        description: 'Paths to ignore for triggering builds'
+        required: false
+        type: string
+        default: 'import/**,.github/**'
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:

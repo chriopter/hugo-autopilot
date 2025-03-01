@@ -12,18 +12,15 @@ Used for example here [christopher-eller.de](https://github.com/chriopter/christ
 
 ## Features & Workflow Architecture
 
-Hugo Autopilot combines three workflows (Builder, Updater, PR Merger) into a single solution, using a router to run the right workflow based on the trigger event:
+Hugo Autopilot provides three independent reusable workflows that work together to automate your Hugo site maintenance:
 
-| Event Type | Hugo Builder | Hugo Updater | PR Merger |
-|------------|:----------------------------------:|:-----------------------------------:|:------------------------------:|
-| Description | **Rebuilds site<br>cache-free** | **Updates to newest<br>Hugo version** | **Auto-merges<br>Dependabot<br>PRs** |
-| Content Change<br>(`push` to main) | ✅ | ❌ | ❌ |
-| Weekly Check<br>(`schedule` weekly) | ✅* | ✅ | ❌ |
-| After Hugo Update<br>(`repository_dispatch`) | ✅ | ❌ | ❌ |
-| Dependency Update<br>(`pull_request from Dependabot`) | ❌ | ❌ | ✅ |
-| Manual Trigger<br>(`workflow_dispatch`) | ✅* | ✅ | ✅ |
+| Workflow | Description | Content Change<br>(`push`) | Weekly Check<br>(`schedule`) | After Update<br>(`repository_dispatch`) | Dependabot PR<br>(`pull_request`) | Manual<br>(`workflow_dispatch`) |
+|----------|-------------|:---------------------------:|:----------------------------:|:--------------------------------------:|:---------------------------------:|:-------------------------------:|
+| **Hugo Builder**<br>`hugo-autopilot-builder.yml` | Builds and deploys your Hugo site to GitHub Pages with cache-free builds and Git info support | ✅ | ❌ | ✅ | ❌ | ✅ |
+| **Hugo Updater**<br>`hugo-autopilot-updater.yml` | Checks for new Hugo versions, creates and auto-merges PRs, and triggers a rebuild | ❌ | ✅ | ❌ | ❌ | ✅ |
+| **Dependabot Merger**<br>`hugo-autopilot-dependabot-merger.yml` | Automatically merges Dependabot PRs for GitHub Actions dependencies | ❌ | ❌ | ❌ | ✅ | ✅ |
 
-\* Hugo Updater Creates PR, Merges it and dispatches a Build 
+**Note:** The Hugo Updater automatically triggers the Builder after creating and merging a PR via the repository_dispatch event.
 
 **Note:** Auto-Dependency updates are also used by this repo to always use newest sub-workflows like peaceiris/actions-hugo.
 
