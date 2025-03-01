@@ -140,6 +140,10 @@ jobs:
       pr_title_prefix: 'Update Hugo:'
 ```
 
+### Git Submodules Support
+
+Hugo Autopilot automatically checks out Git submodules during the build process. If your Hugo site uses submodules (e.g., for themes), make sure you've committed and pushed all changes to both your theme repository and your main site repository.
+
 ### External Triggers
 
 The hugo-autopilot.yml file you created above is configured to listen for the `repository_dispatch` event with type `hugo-autopilot-build`. You can use this to trigger your Hugo site build from other workflows:
