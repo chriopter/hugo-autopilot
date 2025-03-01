@@ -82,59 +82,124 @@ updates:
      - Enable "Allow GitHub Actions to request the id-token write permission"
    - This ensures the workflow can trigger other workflows and handle cross-organization permissions
 
-4. **Create the workflow file** at `.github/workflows/hugo-autopilot.yml` (see below)
+4. **Create the three workflow files** in your `.github/workflows/` directory (see below)
 
-## Workflow File
+## Workflow Files
 
-Create this file at `.github/workflows/hugo-autopilot.yml`:
+### 1. Hugo Builder Workflow
+
+Create this file at `.github/workflows/hugo-autopilot-builder.yml`:
 
 ```yaml
-name: Hugo Autopilot
+name: Hugo Autopilot Builder
 
 on:
   # Triggers the build and deploy job when you push to main branch
-  # Ignores changes to import directory to avoid conflicts with photo processing
   push:
     branches: ["main"]
     paths-ignore:
       - 'import/**'
+      - '.github/**'
   
-  # Triggers the Hugo update job weekly to check for new Hugo versions
-  # Runs at 6:00 AM on Mondays to minimize disruption
-  schedule:
-    - cron: '0 6 * * 1'  # Weekly on Monday
-  
-  # Triggers the PR auto-merge job when Dependabot creates a PR
-  # Automatically handles dependency updates
-  pull_request:
-  
-  # Allows manual triggering of all jobs from the GitHub Actions tab
-  # Useful for testing or forcing updates
+  # Allows manual triggering from the GitHub Actions tab
   workflow_dispatch:
   
   # Allows other workflows to trigger the build job
-  # Used by the photo processing workflow to rebuild after adding photos
   repository_dispatch:
     types: [hugo-autopilot-build]
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
-  # Single job that routes to the appropriate workflow based on the trigger
-  autopilot:
-    uses: chriopter/hugo-autopilot/.github/workflows/hugo-autopilot.yml@main
+  # Build and deploy Hugo site
+  build:
+    uses: chriopter/hugo-autopilot/.github/workflows/hugo-autopilot-builder.yml@main
     permissions:
-      contents: write
+      contents: read
       pages: write
       id-token: write
-      pull-requests: write
     with:
       # Path to your Hugo version file
       hugo_version_file: '.hugoversion'
       # Enable Git info for Hugo (last modified dates, etc.)
       enable_git_info: true
+      # The branch to build from
+      base_branch: 'main'
+      # Paths to ignore for triggering builds
+      ignore_paths: 'import/**,.github/**'
+```
+
+### 2. Hugo Updater Workflow
+
+Create this file at `.github/workflows/hugo-autopilot-updater.yml`:
+
+```yaml
+name: Hugo Autopilot Updater
+
+on:
+  # Triggers the Hugo update job weekly to check for new Hugo versions
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly on Monday
+  
+  # Allows manual triggering from the GitHub Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow PR creation and merging
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  # Update Hugo version
+  update:
+    uses: chriopter/hugo-autopilot/.github/workflows/hugo-autopilot-updater.yml@main
+    permissions:
+      contents: write
+      pull-requests: write
+    with:
+      # Path to your Hugo version file
+      hugo_version_file: '.hugoversion'
+      # Branch name to use for update PRs
+      update_branch: 'update-hugo'
+      # Prefix for Hugo update PR titles
+      pr_title_prefix: 'Update Hugo:'
+```
+
+### 3. Dependabot Merger Workflow
+
+Create this file at `.github/workflows/hugo-autopilot-dependabot-merger.yml`:
+
+```yaml
+name: Hugo Autopilot Dependabot Merger
+
+on:
+  # Triggers the PR auto-merge job when Dependabot creates a PR
+  pull_request:
+  
+  # Allows manual triggering from the GitHub Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow PR merging
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  # Auto-merge Dependabot PRs
+  automerge:
+    uses: chriopter/hugo-autopilot/.github/workflows/hugo-autopilot-dependabot-merger.yml@main
+    permissions:
+      contents: write
+      pull-requests: write
+    with:
       # Method to use when merging PRs
       merge_method: 'squash'
-      # Prefix for Hugo update PR titles (used for state tracking)
-      pr_title_prefix: 'Update Hugo:'
+      # Commit message template
+      commit_message: 'pull-request-title'
 ```
 
 ### Git Submodules Support
