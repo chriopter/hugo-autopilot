@@ -14,28 +14,28 @@ Used for example here [christopher-eller.de](https://github.com/chriopter/christ
 
 Three reusable workflows that automate your Hugo site maintenance:
 
-### **Hugo Builder** (`hugo-autopilot-builder.yml`)
-Builds and deploys your Hugo site to GitHub Pages.
+## 1. Hugo Builder
+**Purpose:** Builds and deploys your Hugo site to GitHub Pages  
+**File:** `hugo-autopilot-builder.yml`
 
-**Triggers:** Push to main, external calls via `repository_dispatch`, manual UI trigger
+- **Triggers:** Push to main, external calls via `repository_dispatch`, manual UI trigger
+- **Actions:** Checkout repo, build with Hugo version from `.hugoversion`, deploy to Pages
 
-**Actions:** Checkout repo, build with Hugo version from `.hugoversion`, deploy to Pages
+## 2. Hugo Updater
+**Purpose:** Updates Hugo version and triggers rebuild  
+**File:** `hugo-autopilot-updater.yml`
 
-### **Hugo Updater** (`hugo-autopilot-updater.yml`)
-Updates Hugo version and triggers rebuild.
+- **Triggers:** Weekly schedule, manual UI trigger
+- **Actions:** Check for updates, create PR, auto-merge, trigger Builder workflow
 
-**Triggers:** Weekly schedule, manual UI trigger
+## 3. Dependabot Merger
+**Purpose:** Auto-merges dependency updates  
+**File:** `hugo-autopilot-dependabot-merger.yml`
 
-**Actions:** Check for updates, create PR, auto-merge, trigger Builder workflow
+- **Triggers:** Dependabot PRs, manual UI trigger
+- **Actions:** Verify Dependabot PR, auto-merge
 
-### **Dependabot Merger** (`hugo-autopilot-dependabot-merger.yml`)
-Auto-merges dependency updates.
-
-**Triggers:** Dependabot PRs, manual UI trigger
-
-**Actions:** Verify Dependabot PR, auto-merge
-
-**Note:** Keeps sub-workflows like peaceiris/actions-hugo updated.
+> **Note:** Keeps sub-workflows like peaceiris/actions-hugo updated.
 
 ## Prepare Repo
 
