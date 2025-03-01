@@ -50,6 +50,7 @@ jobs:
         with:
           ref: ${{ inputs.base_branch }}
           fetch-depth: 0  # Fetch all history
+          submodules: true  # Always check out submodules
       
       - name: Read Hugo version
         id: hugo-version
