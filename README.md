@@ -52,26 +52,13 @@ See the `example-user-repo` folder for reference files. To set up Hugo Autopilot
 
 ## External Triggers
 
-### Callable Triggers
-
-The only workflow that can be explicitly triggered from external sources is the **Hugo Builder** workflow. It listens for the `repository_dispatch` event with type `hugo-autopilot-build`.
-
-You can trigger a Hugo site build from:
-- Other workflows in your repository
-- External systems that can make API calls to GitHub
-- Custom scripts or automation tools
-
-### How to Call the Hugo Builder Workflow
-
-Add this to your other workflow files when you need to trigger a site rebuild:
+The **Hugo Builder** workflow can be triggered from external sources using the `repository_dispatch` event with type `hugo-autopilot-build`. Add this to your workflows to trigger a site rebuild:
 
 ```yaml
 - name: Trigger Hugo site rebuild
   uses: peter-evans/repository-dispatch@v3
   with:
-    # This targets your own repository
     token: ${{ secrets.GITHUB_TOKEN }}
-    # This matches the event type in your hugo-autopilot-builder.yml file
     event-type: hugo-autopilot-build
 ```
 
