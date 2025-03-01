@@ -20,10 +20,10 @@ Three reusable workflows that automate your Hugo site maintenance:
 **Actions:** Checkout repo, build with Hugo version from `.hugoversion`, deploy to Pages
 
 ### 2. Hugo Updater
-**Purpose:** Updates Hugo version and triggers rebuild  
-**Triggers:** Weekly schedule, manual UI trigger  
-**Actions:** Check for updates, create PR, auto-merge, trigger Builder workflow
-> **Note:** Automatically checks out Git submodules during the build process (updates themes etc.).
+- **Purpose:** Updates Hugo version and triggers rebuild  
+- **Triggers:** Weekly schedule, manual UI trigger  
+- **Actions:** Check for updates, create PR, auto-merge, trigger Builder workflow
+- > **Note:** Automatically checks out Git submodules during the build process (updates themes etc.).
 
 ### 3. Dependabot Merger
 **Purpose:** Auto-merges dependency updates  
