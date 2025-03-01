@@ -15,20 +15,17 @@ Used for example here [christopher-eller.de](https://github.com/chriopter/christ
 Three reusable workflows that automate your Hugo site maintenance:
 
 ### Hugo Builder
-**Purpose:** Builds and deploys your Hugo site to GitHub Pages  
-
+- **Purpose:** Builds and deploys your Hugo site to GitHub Pages  
 - **Triggers:** Push to main, external calls via `repository_dispatch`, manual UI trigger
 - **Actions:** Checkout repo, build with Hugo version from `.hugoversion`, deploy to Pages
 
 ### Hugo Updater
-**Purpose:** Updates Hugo version and triggers rebuild  
-
+- **Purpose:** Updates Hugo version and triggers rebuild  
 - **Triggers:** Weekly schedule, manual UI trigger
 - **Actions:** Check for updates, create PR, auto-merge, trigger Builder workflow
 
 ### Dependabot Merger
-**Purpose:** Auto-merges dependency updates  
-
+- **Purpose:** Auto-merges dependency updates  
 - **Triggers:** Dependabot PRs, manual UI trigger
 - **Actions:** Verify Dependabot PR, auto-merge
 
