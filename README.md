@@ -12,51 +12,30 @@ Used for example here [christopher-eller.de](https://github.com/chriopter/christ
 
 ## Features & Workflow Architecture
 
-Hugo Autopilot provides three independent reusable workflows that work together to automate your Hugo site maintenance:
+Three reusable workflows that automate your Hugo site maintenance:
 
 ### **Hugo Builder** (`hugo-autopilot-builder.yml`)
+Builds and deploys your Hugo site to GitHub Pages.
 
-Builds and deploys your Hugo site to GitHub Pages with cache-free builds and Git info support.
+**Triggers:** Push to main, external calls via `repository_dispatch`, manual UI trigger
 
-**Triggers:**
-- **Content Change** (`push` to main branch) - *Automatic trigger*
-- **After Hugo Update** (via `repository_dispatch` event type `hugo-autopilot-build`) - *Externally callable trigger*
-- **Manual Trigger** (via `workflow_dispatch`) - *Manual trigger from GitHub UI*
-
-**Actions:**
-- Checks out repository with submodules
-- Reads Hugo version from `.hugoversion` file
-- Sets up GitHub Pages
-- Builds the site with specified Hugo version
-- Uploads and deploys to GitHub Pages
+**Actions:** Checkout repo, build with Hugo version from `.hugoversion`, deploy to Pages
 
 ### **Hugo Updater** (`hugo-autopilot-updater.yml`)
+Updates Hugo version and triggers rebuild.
 
-Checks for new Hugo versions, creates and auto-merges PRs, and triggers a rebuild.
+**Triggers:** Weekly schedule, manual UI trigger
 
-**Triggers:**
-- **Weekly Check** (`schedule` every Monday at 6:00 AM) - *Automatic trigger*
-- **Manual Trigger** (via `workflow_dispatch`) - *Manual trigger from GitHub UI*
-
-**Actions:**
-- Checks current Hugo version against latest release
-- Creates a PR with version update if needed
-- Auto-merges the PR
-- Triggers the Builder workflow via repository_dispatch
+**Actions:** Check for updates, create PR, auto-merge, trigger Builder workflow
 
 ### **Dependabot Merger** (`hugo-autopilot-dependabot-merger.yml`)
+Auto-merges dependency updates.
 
-Automatically merges Dependabot PRs for GitHub Actions dependencies.
+**Triggers:** Dependabot PRs, manual UI trigger
 
-**Triggers:**
-- **Dependency Update** (`pull_request` from Dependabot) - *Automatic trigger*
-- **Manual Trigger** (via `workflow_dispatch`) - *Manual trigger from GitHub UI*
+**Actions:** Verify Dependabot PR, auto-merge
 
-**Actions:**
-- Verifies PR is from Dependabot
-- Auto-merges the PR using specified merge method
-
-**Note:** Auto-Dependency updates are also used by this repo to always use newest sub-workflows like peaceiris/actions-hugo.
+**Note:** Keeps sub-workflows like peaceiris/actions-hugo updated.
 
 ## Prepare Repo
 
