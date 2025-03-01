@@ -14,19 +14,19 @@ Used for example here [christopher-eller.de](https://github.com/chriopter/christ
 
 Three reusable workflows that automate your Hugo site maintenance:
 
-## Hugo Builder [`hugo-autopilot-builder.yml`]
+## Hugo Builder `hugo-autopilot-builder.yml`
 **Purpose:** Builds and deploys your Hugo site to GitHub Pages  
 
 - **Triggers:** Push to main, external calls via `repository_dispatch`, manual UI trigger
 - **Actions:** Checkout repo, build with Hugo version from `.hugoversion`, deploy to Pages
 
-## Hugo Updater [`hugo-autopilot-updater.yml`]
+## Hugo Updater `hugo-autopilot-updater.yml`
 **Purpose:** Updates Hugo version and triggers rebuild  
 
 - **Triggers:** Weekly schedule, manual UI trigger
 - **Actions:** Check for updates, create PR, auto-merge, trigger Builder workflow
 
-## Dependabot Merger [`hugo-autopilot-dependabot-merger.yml`]
+## Dependabot Merger `hugo-autopilot-dependabot-merger.yml`
 **Purpose:** Auto-merges dependency updates  
 
 - **Triggers:** Dependabot PRs, manual UI trigger
