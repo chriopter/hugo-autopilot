@@ -1,4 +1,4 @@
-name: Hugo Updater
+name: Hugo Autopilot Updater
 
 on:
   workflow_call:
@@ -116,15 +116,6 @@ jobs:
             echo "No Hugo update needed"
           fi
       
-      # No need to trigger a build when no update is found
-      # The build job now runs in parallel with the update job
-
-      - name: Delete branch after merge
-        if: steps.create-pr.outputs.pull-request-number
-        run: |
-          # Delete the branch
-          git push origin --delete ${{ inputs.update_branch }} || echo "Branch may already be deleted"
-          
       # Debug information before triggering Hugo Builder
       - name: Debug Repository Info
         if: steps.create-pr.outputs.pull-request-number

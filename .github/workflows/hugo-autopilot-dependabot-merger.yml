@@ -1,4 +1,5 @@
-name: Dependabot Auto-merge
+name: Hugo Autopilot Dependabot Merger
+
 on:
   workflow_call:
     inputs:
