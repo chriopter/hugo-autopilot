@@ -140,7 +140,7 @@ jobs:
       - name: Trigger Hugo Builder
         if: steps.create-pr.outputs.pull-request-number
         id: dispatch
-        uses: peter-evans/repository-dispatch@v3
+        uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           event-type: hugo-autopilot-build
