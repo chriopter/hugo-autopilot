@@ -12,20 +12,13 @@ Used for example here [christopher-eller.de](https://github.com/chriopter/christ
 
 ## Features & Workflow Architecture
 
-### Hugo Builder
-Builds and deploys your Hugo site to GitHub Pages. Automatically checks out Git submodules during the build process (updates themes etc.).
-- **Triggers:** Push to main, external calls via `repository_dispatch`, manual UI trigger  
-- **Actions:** Checkout repo, build with Hugo version from `.hugoversion`, deploy to Pages
+Three reusable workflows that automate your Hugo site maintenance:
 
-### Hugo Updater
-Updates Hugo version and triggers rebuild with newest version.
-- **Triggers:** Weekly schedule, manual UI trigger  
-- **Actions:** Check for updates, create PR, auto-merge, trigger Builder workflow
-
-### Dependabot Merger
-Auto-merges dependency updates of github workflows. Used in this repo as well to update whats used in builder, updater.
-- **Triggers:** Dependabot PRs, manual UI trigger  
-- **Actions:** Verify Dependabot PR, auto-merge
+| Workflow | Purpose | Triggers & Actions |
+|----------|---------|-------------------|
+| **Hugo Builder** | Builds and deploys your Hugo site to GitHub Pages. Automatically checks out Git submodules during the build process. | **Triggers:** Push to main, external calls via `repository_dispatch`, manual UI trigger<br>**Actions:** Checkout repo, build with Hugo version from `.hugoversion`, deploy to Pages |
+| **Hugo Updater** | Updates Hugo version and triggers rebuild with newest version. | **Triggers:** Weekly schedule, manual UI trigger<br>**Actions:** Check for updates, create PR, auto-merge, trigger Builder workflow |
+| **Dependabot Merger** | Auto-merges dependency updates of github workflows. Used in this repo as well to update what's used in builder, updater. | **Triggers:** Dependabot PRs, manual UI trigger<br>**Actions:** Verify Dependabot PR, auto-merge |
 
 
 ## Setup Guide
