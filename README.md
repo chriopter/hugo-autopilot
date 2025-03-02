@@ -12,8 +12,6 @@ Used for example here [christopher-eller.de](https://github.com/chriopter/christ
 
 ## Features & Workflow Architecture
 
-Three reusable workflows that automate your Hugo site maintenance:
-
 ### Hugo Builder
 Builds and deploys your Hugo site to GitHub Pages. Automatically checks out Git submodules during the build process (updates themes etc.).
 - **Triggers:** Push to main, external calls via `repository_dispatch`, manual UI trigger  
