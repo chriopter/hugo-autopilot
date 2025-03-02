@@ -5,49 +5,30 @@
 
 Automate your Hugo site maintenance with GitHub Actions workflows. Set up once, then let it handle builds, deployments, and updates automatically.
 
-**Live example:** [christopher-eller.de](https://github.com/chriopter/christopher-eller.de)
+Used for example here [christopher-eller.de](https://github.com/chriopter/christopher-eller.de).
 
-## Table of Contents
-- [Quick Start](#quick-start)
-- [Features](#features)
-- [Setup Guide](#setup-guide)
-- [Credits](#credits)
-- [License](#license)
+> **Note:** Primarly LLM Code - use with caution. Be aware of cascading triggering, potential breaking changes from automatic updates (even major!), resource consumption. Workflows have permissions to modify repository content.
 
-## Quick Start
 
-1. Copy example files to your Hugo repository:
-   ```
-   .hugoversion
-   .github/dependabot.yml
-   .github/workflows/hugo-autopilot-*.yml
-   ```
+## Features & Workflow Architecture
 
-2. Enable GitHub Actions permissions in repository settings
+Three reusable workflows that automate your Hugo site maintenance:
 
-3. Push to main branch to trigger your first automated build
+### Hugo Builder
+Builds and deploys your Hugo site to GitHub Pages. Automatically checks out Git submodules during the build process (updates themes etc.).
+- **Triggers:** Push to main, external calls via `repository_dispatch`, manual UI trigger  
+- **Actions:** Checkout repo, build with Hugo version from `.hugoversion`, deploy to Pages
 
-⚠️ **CAUTION:** This project uses automated updates that may introduce breaking changes. Workflows have permissions to modify repository content.
+### Hugo Updater
+Updates Hugo version and triggers rebuild with newest version.
+- **Triggers:** Weekly schedule, manual UI trigger  
+- **Actions:** Check for updates, create PR, auto-merge, trigger Builder workflow
 
-## Features
+### Dependabot Merger
+Auto-merges dependency updates of github workflows. Used in this repo as well to update whats used in builder, updater.
+- **Triggers:** Dependabot PRs, manual UI trigger  
+- **Actions:** Verify Dependabot PR, auto-merge
 
-Hugo Autopilot provides three automated workflows:
-
-| Workflow | Purpose | Triggers | Actions |
-|----------|---------|----------|---------|
-| **Hugo Builder** | Builds & deploys site | Push to main, manual, external API | Checkout repo with submodules, build with Hugo version from `.hugoversion`, deploy to Pages |
-| **Hugo Updater** | Updates Hugo version | Weekly schedule, manual | Check for updates, create PR, auto-merge, trigger Builder |
-| **Dependabot Merger** | Auto-merges dependencies | Dependabot PRs, manual | Verify PR, auto-merge |
-
-**External Triggering:** The Builder workflow can be called from other workflows:
-
-```yaml
-- name: Trigger Hugo site rebuild
-  uses: peter-evans/repository-dispatch@v3
-  with:
-    token: ${{ secrets.GITHUB_TOKEN }}
-    event-type: hugo-autopilot-build
-```
 
 ## Setup Guide
 
@@ -62,13 +43,28 @@ Hugo Autopilot provides three automated workflows:
      - ✅ Allow GitHub Actions to create and approve pull requests
      - ✅ Allow GitHub Actions to request the id-token write permission
 
+
+## External Triggers
+
+The **Hugo Builder** workflow can be triggered from external sources using the `repository_dispatch` event with type `hugo-autopilot-build`. Add this to your workflows to trigger a site rebuild:
+
+```yaml
+- name: Trigger Hugo site rebuild
+  uses: peter-evans/repository-dispatch@v3
+  with:
+    token: ${{ secrets.GITHUB_TOKEN }}
+    event-type: hugo-autopilot-build
+```
+
+
 ## Credits
 
-Built with these excellent GitHub Actions:
-- [peaceiris/actions-hugo](https://github.com/peaceiris/actions-hugo)
-- [peter-evans/create-pull-request](https://github.com/peter-evans/create-pull-request)
-- [dependabot/fetch-metadata](https://github.com/dependabot/fetch-metadata)
+This project builds upon and is inspired by several excellent GitHub Actions:
+
+- [peaceiris/actions-hugo](https://github.com/peaceiris/actions-hugo) - For Hugo setup and deployment patterns
+- [peter-evans/create-pull-request](https://github.com/peter-evans/create-pull-request) - For PR creation
+- [dependabot/fetch-metadata](https://github.com/dependabot/fetch-metadata) - For Dependabot PR handling
 
 ## License
 
-MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
