@@ -23,6 +23,16 @@ Three reusable workflows that automate your Hugo site maintenance:
 
 ## Setup Guide
 
+### One-line setup
+
+```bash
+curl -s https://raw.githubusercontent.com/chriopter/hugo-autopilot/main/setup.sh | bash
+```
+
+This script copies the .hugoversion file and downloads all required workflow files.
+
+### Manual setup
+
 1. **Copy required files** from the `example-user-repo`:
    - `.hugoversion` - Contains your Hugo version
    - `.github/dependabot.yml` - Enables automatic dependency updates
