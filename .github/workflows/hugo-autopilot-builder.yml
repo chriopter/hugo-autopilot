@@ -51,7 +51,16 @@ jobs:
           ref: ${{ inputs.base_branch }}
           fetch-depth: 0  # Fetch all history
           submodules: true  # Always check out submodules
-      
+
+      - name: Install npm dependencies if present
+        run: |
+          if find . -name "package.json" -not -path "*/node_modules/*" -not -path "*/public/*" | grep -q .; then
+            echo "📦 Installing npm dependencies..."
+            find . -name "package.json" -not -path "*/node_modules/*" -not -path "*/public/*" -exec sh -c 'cd "$(dirname "$1")" && npm install' _ {} \;
+          else
+            echo "ℹ️ No package.json files found, skipping npm install"
+          fi
+
       - name: Read Hugo version
         id: hugo-version
         run: echo "HUGO_VERSION=$(cat ${{ inputs.hugo_version_file }})" >> $GITHUB_OUTPUT
