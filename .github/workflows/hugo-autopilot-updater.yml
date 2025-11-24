@@ -38,7 +38,7 @@ jobs:
       update_needed: ${{ steps.set-outputs.outputs.update_needed }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       
       - name: Check Hugo version
         id: check
